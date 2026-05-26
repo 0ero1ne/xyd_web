@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/menu/menu",
+    "pages/index/index",
+    "pages/orders/orders",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "智慧植保",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F7F2"
+  },
+  "tabBar": {
+    "color": "#7A847B",
+    "selectedColor": "#237A4D",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/menu/menu",
+        "text": "选单"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "订单"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "__usePrivacyCheck__": true,
+  "usingComponents": {}
+}

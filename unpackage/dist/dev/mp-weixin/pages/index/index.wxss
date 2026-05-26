@@ -1,0 +1,213 @@
+
+.login-page.data-v-1cf27b2a {
+		box-sizing: border-box;
+		min-height: 100vh;
+		padding: calc(var(--status-bar-height) + 88rpx) 32rpx 48rpx;
+		background: linear-gradient(180deg, #eaf5e9 0%, #f5f7f2 46%, #f5f7f2 100%);
+}
+.hero.data-v-1cf27b2a {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-bottom: 62rpx;
+}
+.brand.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 112rpx;
+		height: 112rpx;
+		border-radius: 30rpx;
+		margin-bottom: 28rpx;
+		background: #237a4d;
+		box-shadow: 0 18rpx 34rpx rgba(35, 122, 77, 0.2);
+}
+.brand-icon.data-v-1cf27b2a {
+		color: #fff;
+		font-size: 62rpx;
+		font-weight: 300;
+		line-height: 1;
+}
+.app-name.data-v-1cf27b2a {
+		color: #14251d;
+		font-size: 52rpx;
+		font-weight: 700;
+		letter-spacing: 3rpx;
+}
+.subtitle.data-v-1cf27b2a {
+		margin-top: 16rpx;
+		color: #6e7c74;
+		font-size: 27rpx;
+}
+.login-card.data-v-1cf27b2a {
+		padding: 44rpx 30rpx 36rpx;
+		border-radius: 30rpx;
+		background: #fff;
+		box-shadow: 0 10rpx 38rpx rgba(35, 56, 44, 0.06);
+}
+.card-title.data-v-1cf27b2a {
+		display: block;
+		color: #18261f;
+		font-size: 36rpx;
+		font-weight: 600;
+}
+.card-tip.data-v-1cf27b2a {
+		display: block;
+		margin: 10rpx 0 28rpx;
+		color: #7b887f;
+		font-size: 25rpx;
+}
+.wechat-profile.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		padding: 20rpx;
+		margin-bottom: 30rpx;
+		border-radius: 20rpx;
+		background: #f5f8f4;
+}
+.avatar-picker.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 92rpx;
+		height: 92rpx;
+		padding: 0;
+		margin: 0 22rpx 0 0;
+		border-radius: 50%;
+		background: #e1f2e5;
+		overflow: hidden;
+}
+.avatar-picker.data-v-1cf27b2a::after {
+		border: none;
+}
+.avatar-disabled.data-v-1cf27b2a {
+		box-sizing: border-box;
+}
+.avatar-image.data-v-1cf27b2a {
+		width: 92rpx;
+		height: 92rpx;
+}
+.avatar-placeholder.data-v-1cf27b2a {
+		color: #237a4d;
+		font-size: 24rpx;
+}
+.nickname-box.data-v-1cf27b2a {
+		flex: 1;
+		min-width: 0;
+}
+.profile-label.data-v-1cf27b2a {
+		display: block;
+		margin-bottom: 10rpx;
+		color: #27382f;
+		font-size: 25rpx;
+}
+.nickname-input.data-v-1cf27b2a {
+		height: 42rpx;
+		color: #18261f;
+		font-size: 29rpx;
+}
+.role-card.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+		height: 132rpx;
+		margin-bottom: 22rpx;
+		padding: 20rpx;
+		border: 2rpx solid #e6eade;
+		border-radius: 22rpx;
+		background: #fff;
+}
+.role-card.active.data-v-1cf27b2a {
+		border-color: #237a4d;
+		background: #f0f8f1;
+}
+.role-icon.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 78rpx;
+		height: 78rpx;
+		border-radius: 18rpx;
+		margin-right: 20rpx;
+		color: #237a4d;
+		font-size: 34rpx;
+		font-weight: 600;
+		background: #e1f2e5;
+}
+.role-info.data-v-1cf27b2a {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+}
+.role-name.data-v-1cf27b2a {
+		color: #1e3027;
+		font-size: 31rpx;
+		font-weight: 600;
+}
+.role-desc.data-v-1cf27b2a {
+		margin-top: 8rpx;
+		color: #76847a;
+		font-size: 23rpx;
+}
+.radio.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 34rpx;
+		height: 34rpx;
+		border: 2rpx solid #cfd7cd;
+		border-radius: 50%;
+}
+.radio.checked.data-v-1cf27b2a {
+		border-color: #237a4d;
+}
+.radio-dot.data-v-1cf27b2a {
+		width: 20rpx;
+		height: 20rpx;
+		border-radius: 50%;
+		background: #237a4d;
+}
+.login-button.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 94rpx;
+		margin-top: 28rpx;
+		border-radius: 18rpx;
+		color: #fff;
+		font-size: 31rpx;
+		background: #237a4d;
+}
+.login-button.data-v-1cf27b2a::after {
+		border: none;
+}
+.browse-button.data-v-1cf27b2a {
+		height: 82rpx;
+		margin-top: 18rpx;
+		color: #237a4d;
+		font-size: 28rpx;
+		background: transparent;
+}
+.browse-button.data-v-1cf27b2a::after {
+		border: none;
+}
+.agreement.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		margin-top: 26rpx;
+		color: #7e8b82;
+		font-size: 22rpx;
+		line-height: 40rpx;
+}
+.agreement-label.data-v-1cf27b2a {
+		display: flex;
+		align-items: center;
+}
+.agreement-label checkbox.data-v-1cf27b2a {
+		margin-right: 5rpx;
+		transform: scale(0.72);
+}
+.agreement-link.data-v-1cf27b2a {
+		color: #237a4d;
+}
