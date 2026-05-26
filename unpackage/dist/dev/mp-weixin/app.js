@@ -6,6 +6,11 @@ if (!Math) {
   "./pages/index/index.js";
   "./pages/orders/orders.js";
   "./pages/profile/profile.js";
+  "./pages/profile/edit-profile.js";
+  "./pages/profile/addresses.js";
+  "./pages/profile/notifications.js";
+  "./pages/profile/security.js";
+  "./pages/profile/help.js";
 }
 const _sfc_main = {
   onLaunch: function() {

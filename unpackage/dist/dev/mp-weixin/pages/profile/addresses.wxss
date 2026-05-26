@@ -1,0 +1,39 @@
+
+.page.data-v-9db9159f { box-sizing: border-box; min-height: 100vh; padding: 28rpx; background: #f5f7f2;
+}
+.address.data-v-9db9159f, .editor.data-v-9db9159f, .empty.data-v-9db9159f { margin-bottom: 20rpx; padding: 28rpx; border-radius: 22rpx; background: #fff;
+}
+.title.data-v-9db9159f { display: flex; align-items: center; margin-bottom: 12rpx; color: #192920; font-size: 31rpx; font-weight: 600;
+}
+.tag.data-v-9db9159f { margin-left: 14rpx; padding: 3rpx 12rpx; border-radius: 18rpx; color: #237a4d; font-size: 21rpx; background: #e8f4ea;
+}
+.line.data-v-9db9159f { display: block; color: #69776e; font-size: 25rpx; line-height: 40rpx;
+}
+.actions.data-v-9db9159f { display: flex; justify-content: flex-end; margin-top: 20rpx; padding-top: 18rpx; border-top: 1rpx solid #edf1ea; color: #237a4d; font-size: 25rpx;
+}
+.actions text.data-v-9db9159f { margin-left: 32rpx;
+}
+.actions .delete.data-v-9db9159f { color: #b55d50;
+}
+.empty.data-v-9db9159f { color: #77857b; font-size: 27rpx; text-align: center;
+}
+.editor-title.data-v-9db9159f { display: block; margin-bottom: 18rpx; color: #18261f; font-size: 32rpx; font-weight: 600;
+}
+.editor input.data-v-9db9159f, .picker.data-v-9db9159f { box-sizing: border-box; height: 84rpx; margin-top: 16rpx; padding: 0 20rpx; border-radius: 13rpx; color: #18261f; font-size: 27rpx; background: #f5f8f4;
+}
+.picker.data-v-9db9159f { display: flex; align-items: center; color: #66766d;
+}
+.switch.data-v-9db9159f { display: flex; align-items: center; justify-content: space-between; margin-top: 24rpx; color: #27382f; font-size: 27rpx;
+}
+.buttons.data-v-9db9159f { display: flex; margin-top: 28rpx;
+}
+.buttons button.data-v-9db9159f { flex: 1; height: 86rpx; border-radius: 16rpx; font-size: 28rpx;
+}
+.cancel.data-v-9db9159f { margin-right: 18rpx; color: #237a4d; background: #edf6ef;
+}
+.save.data-v-9db9159f, .add.data-v-9db9159f { color: #fff; background: #237a4d;
+}
+.buttons button.data-v-9db9159f::after, .add.data-v-9db9159f::after { border: none;
+}
+.add.data-v-9db9159f { width: 100%; height: 88rpx; margin-top: 24rpx; border-radius: 16rpx; font-size: 28rpx;
+}

@@ -63,10 +63,20 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 96rpx;
+		min-height: 108rpx;
 		border-bottom: 1rpx solid #edf1ea;
 		color: #27382f;
 		font-size: 28rpx;
+}
+.setting-content.data-v-dd383ca2 {
+		display: flex;
+		flex-direction: column;
+		padding: 18rpx 0;
+}
+.setting-desc.data-v-dd383ca2 {
+		margin-top: 8rpx;
+		color: #8b958e;
+		font-size: 23rpx;
 }
 .setting-row.data-v-dd383ca2:last-child {
 		border-bottom: 0;

@@ -1,0 +1,25 @@
+
+.page.data-v-f3856239 { box-sizing: border-box; min-height: 100vh; padding: 28rpx; background: #f5f7f2;
+}
+.card.data-v-f3856239 { margin-bottom: 24rpx; padding: 0 28rpx; border-radius: 22rpx; background: #fff;
+}
+.row.data-v-f3856239 { display: flex; align-items: center; justify-content: space-between; min-height: 102rpx; border-bottom: 1rpx solid #edf1ea;
+}
+.row.last.data-v-f3856239 { border-bottom: none;
+}
+.row view.data-v-f3856239 { display: flex; flex-direction: column; padding: 18rpx 0;
+}
+.title.data-v-f3856239, .danger.data-v-f3856239 { color: #26372e; font-size: 28rpx;
+}
+.danger.data-v-f3856239 { color: #b55d50;
+}
+.desc.data-v-f3856239 { margin-top: 8rpx; color: #7c897f; font-size: 23rpx;
+}
+.tag.data-v-f3856239 { padding: 6rpx 15rpx; border-radius: 22rpx; color: #237a4d; font-size: 23rpx; background: #e8f4ea;
+}
+.arrow.data-v-f3856239 { color: #a5aca5; font-size: 38rpx;
+}
+.logout.data-v-f3856239 { width: 100%; height: 90rpx; margin-top: 40rpx; border-radius: 18rpx; color: #b55d50; font-size: 29rpx; background: #fff;
+}
+.logout.data-v-f3856239::after { border: none;
+}

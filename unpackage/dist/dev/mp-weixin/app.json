@@ -3,7 +3,12 @@
     "pages/menu/menu",
     "pages/index/index",
     "pages/orders/orders",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/profile/edit-profile",
+    "pages/profile/addresses",
+    "pages/profile/notifications",
+    "pages/profile/security",
+    "pages/profile/help"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -1,0 +1,17 @@
+
+.page.data-v-b7870fea { box-sizing: border-box; min-height: 100vh; padding: 28rpx; background: #f5f7f2;
+}
+.tip.data-v-b7870fea { margin-bottom: 22rpx; padding: 22rpx 25rpx; border-radius: 16rpx; color: #66776d; font-size: 24rpx; background: #eaf4eb;
+}
+.card.data-v-b7870fea { margin-bottom: 22rpx; padding: 0 26rpx; border-radius: 22rpx; background: #fff;
+}
+.row.data-v-b7870fea { display: flex; align-items: center; justify-content: space-between; min-height: 112rpx; border-bottom: 1rpx solid #edf1ea;
+}
+.row.data-v-b7870fea:last-child, .row.last.data-v-b7870fea { border-bottom: none;
+}
+.row view.data-v-b7870fea { display: flex; flex: 1; flex-direction: column; padding: 20rpx 22rpx 20rpx 0;
+}
+.title.data-v-b7870fea { color: #1d3026; font-size: 29rpx;
+}
+.desc.data-v-b7870fea { margin-top: 8rpx; color: #7b887f; font-size: 23rpx;
+}

@@ -23,6 +23,36 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		},
+		{
+			"path": "pages/profile/edit-profile",
+			"style": {
+				"navigationBarTitleText": "个人资料"
+			}
+		},
+		{
+			"path": "pages/profile/addresses",
+			"style": {
+				"navigationBarTitleText": "服务地址"
+			}
+		},
+		{
+			"path": "pages/profile/notifications",
+			"style": {
+				"navigationBarTitleText": "消息通知"
+			}
+		},
+		{
+			"path": "pages/profile/security",
+			"style": {
+				"navigationBarTitleText": "账号与安全"
+			}
+		},
+		{
+			"path": "pages/profile/help",
+			"style": {
+				"navigationBarTitleText": "帮助与客服"
+			}
 		}
 	],
 	"globalStyle": {

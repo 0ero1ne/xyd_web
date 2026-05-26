@@ -11,14 +11,17 @@
 			</view>
 		</view>
 
-		<view v-if="isLoggedIn" class="settings">
-			<view v-for="item in settings" :key="item" class="setting-row">
-				<text>{{ item }}</text>
+		<view class="settings">
+			<view v-for="item in settings" :key="item.url" class="setting-row" @click="openSetting(item)">
+				<view class="setting-content">
+					<text>{{ item.title }}</text>
+					<text class="setting-desc">{{ item.description }}</text>
+				</view>
 				<text class="arrow">›</text>
 			</view>
 		</view>
 
-		<view v-else class="guest-tip">无需登录即可浏览平台服务，登录后可发布需求或承接任务。</view>
+		<view v-if="!isLoggedIn" class="guest-tip">无需登录即可浏览平台服务，登录后可完善资料、维护服务地址和管理账号。</view>
 
 		<button class="logout" @click="handleAccountAction">
 			{{ isLoggedIn ? '切换身份 / 退出登录' : '自愿登录并使用完整服务' }}
@@ -36,7 +39,13 @@
 					avatarUrl: '',
 					nickname: ''
 				},
-				settings: ['个人资料', '服务地址', '消息通知', '账号与安全', '帮助与客服']
+				settings: [
+					{ title: '个人资料', description: '完善个人信息', url: '/pages/profile/edit-profile', login: true },
+					{ title: '服务地址', description: '设置常用作业地点', url: '/pages/profile/addresses', login: true },
+					{ title: '消息通知', description: '管理提醒方式', url: '/pages/profile/notifications', login: true },
+					{ title: '账号与安全', description: '隐私与登录安全', url: '/pages/profile/security', login: true },
+					{ title: '帮助与客服', description: '常见问题与反馈', url: '/pages/profile/help', login: false }
+				]
 			}
 		},
 		computed: {
@@ -57,8 +66,29 @@
 				avatarUrl: '',
 				nickname: ''
 			}
+			const addresses = uni.getStorageSync('planeServiceAddresses') || []
+			const defaultAddress = addresses.find(item => item.isDefault) || addresses[0]
+			this.settings[0].description = this.isLoggedIn && this.userInfo.nickname ? this.userInfo.nickname : '完善个人信息'
+			this.settings[1].description = this.isLoggedIn && defaultAddress ? defaultAddress.name : '设置常用作业地点'
 		},
 		methods: {
+			openSetting(item) {
+				if (item.login && !this.isLoggedIn) {
+					uni.showModal({
+						title: '登录后使用',
+						content: '该功能需要登录后管理，您可以继续浏览或主动登录。',
+						cancelText: '暂不登录',
+						confirmText: '去登录',
+						success: (result) => {
+							if (result.confirm) {
+								uni.navigateTo({ url: '/pages/index/index' })
+							}
+						}
+					})
+					return
+				}
+				uni.navigateTo({ url: item.url })
+			},
 			handleAccountAction() {
 				if (this.isLoggedIn) {
 					this.logout()
@@ -157,10 +187,22 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 96rpx;
+		min-height: 108rpx;
 		border-bottom: 1rpx solid #edf1ea;
 		color: #27382f;
 		font-size: 28rpx;
+	}
+
+	.setting-content {
+		display: flex;
+		flex-direction: column;
+		padding: 18rpx 0;
+	}
+
+	.setting-desc {
+		margin-top: 8rpx;
+		color: #8b958e;
+		font-size: 23rpx;
 	}
 
 	.setting-row:last-child {
