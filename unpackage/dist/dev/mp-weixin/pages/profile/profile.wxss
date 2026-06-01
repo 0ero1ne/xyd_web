@@ -3,50 +3,85 @@
 		box-sizing: border-box;
 		min-height: 100vh;
 		padding: 28rpx;
-		background: #f5f7f2;
+		background: #f6f7f4;
 }
 .user-card.data-v-dd383ca2 {
 		display: flex;
 		align-items: center;
-		padding: 36rpx 30rpx;
-		border-radius: 24rpx;
-		background: #237a4d;
+		padding: 38rpx 30rpx;
+		border-radius: 26rpx;
+		background: linear-gradient(135deg, #111827, #166534);
+		box-shadow: 0 22rpx 48rpx rgba(17, 24, 39, 0.15);
 }
 .avatar.data-v-dd383ca2 {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 90rpx;
-		height: 90rpx;
+		width: 94rpx;
+		height: 94rpx;
 		margin-right: 24rpx;
+		border: 1rpx solid rgba(255, 255, 255, 0.28);
 		border-radius: 50%;
-		color: #237a4d;
-		font-size: 39rpx;
-		font-weight: 600;
+		color: #111827;
+		font-size: 38rpx;
+		font-weight: 700;
 		background: #fff;
 		overflow: hidden;
 }
 .avatar-image.data-v-dd383ca2 {
-		width: 90rpx;
-		height: 90rpx;
+		width: 94rpx;
+		height: 94rpx;
 }
 .user-info.data-v-dd383ca2 {
 		display: flex;
+		flex: 1;
 		flex-direction: column;
+		min-width: 0;
 }
 .name.data-v-dd383ca2 {
 		color: #fff;
 		font-size: 35rpx;
-		font-weight: 600;
+		font-weight: 700;
 }
 .verified.data-v-dd383ca2 {
 		margin-top: 10rpx;
-		color: rgba(255, 255, 255, 0.74);
+		color: rgba(255, 255, 255, 0.72);
 		font-size: 24rpx;
+}
+.income-card.data-v-dd383ca2,
+	.settings.data-v-dd383ca2,
+	.guest-tip.data-v-dd383ca2,
+	.logout.data-v-dd383ca2 {
+		box-shadow: 0 12rpx 32rpx rgba(17, 24, 39, 0.05);
+}
+.income-card.data-v-dd383ca2 {
+		display: flex;
+		flex-direction: column;
+		margin-top: 28rpx;
+		padding: 30rpx 28rpx;
+		border: 1rpx solid #edf0ed;
+		border-radius: 23rpx;
+		background: #fff;
+}
+.income-title.data-v-dd383ca2 {
+		color: #6b7280;
+		font-size: 25rpx;
+}
+.income-amount.data-v-dd383ca2 {
+		margin-top: 12rpx;
+		color: #166534;
+		font-size: 44rpx;
+		font-weight: 800;
+}
+.income-desc.data-v-dd383ca2 {
+		margin-top: 8rpx;
+		color: #8a928d;
+		font-size: 23rpx;
 }
 .settings.data-v-dd383ca2 {
 		margin-top: 28rpx;
 		padding: 0 28rpx;
+		border: 1rpx solid #edf0ed;
 		border-radius: 23rpx;
 		background: #fff;
 }
@@ -54,7 +89,7 @@
 		margin-top: 28rpx;
 		padding: 30rpx 28rpx;
 		border-radius: 23rpx;
-		color: #748278;
+		color: #6b7280;
 		font-size: 27rpx;
 		line-height: 44rpx;
 		background: #fff;
@@ -63,9 +98,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		min-height: 108rpx;
+		min-height: 110rpx;
 		border-bottom: 1rpx solid #edf1ea;
-		color: #27382f;
+		color: #111827;
 		font-size: 28rpx;
 }
 .setting-content.data-v-dd383ca2 {
@@ -75,7 +110,7 @@
 }
 .setting-desc.data-v-dd383ca2 {
 		margin-top: 8rpx;
-		color: #8b958e;
+		color: #8a928d;
 		font-size: 23rpx;
 }
 .setting-row.data-v-dd383ca2:last-child {
@@ -86,11 +121,17 @@
 		font-size: 38rpx;
 }
 .logout.data-v-dd383ca2 {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		height: 90rpx;
+		line-height: 90rpx;
 		margin-top: 42rpx;
 		border-radius: 18rpx;
-		color: #237a4d;
+		color: #166534;
 		font-size: 28rpx;
+		font-weight: 600;
+		text-align: center;
 		background: #fff;
 }
 .logout.data-v-dd383ca2::after {

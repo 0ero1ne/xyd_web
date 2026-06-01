@@ -1,7 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const utils_request = require("../../utils/request.js");
-const empty = () => ({ id: "", name: "", region: [], detail: "", contact: "", phone: "", isDefault: false });
+const empty = () => ({ id: "", name: "", region: [], detail: "", contact: "", phone: "", longitude: null, latitude: null, isDefault: false });
 const _sfc_main = {
   data() {
     return { addresses: [], editing: false, editIndex: -1, form: empty() };
@@ -21,7 +21,11 @@ const _sfc_main = {
         const data = this.getData(response);
         this.addresses = Array.isArray(data) ? data.map((item) => ({
           ...item,
-          region: Array.isArray(item.region) ? item.region : item.region ? [item.region] : []
+          name: item.addressName || item.name || "",
+          region: Array.isArray(item.region) ? item.region : [item.province, item.city, item.district].filter(Boolean),
+          detail: item.detailAddress || "",
+          contact: item.contactName || "",
+          phone: item.contactPhone || ""
         })) : [];
         this.persist();
       }).catch(() => {
@@ -39,16 +43,22 @@ const _sfc_main = {
       this.editing = true;
     },
     save() {
-      if (!this.form.name.trim() || !this.form.region.length || !this.form.detail.trim())
-        return common_vendor.index.showToast({ title: "请完善地址信息", icon: "none" });
+      if (!this.form.detail.trim())
+        return common_vendor.index.showToast({ title: "请输入服务区域", icon: "none" });
+      if (!this.form.name.trim() || !this.form.region.length)
+        return common_vendor.index.showToast({ title: "请完善区域信息", icon: "none" });
       if (!this.form.contact.trim() || !/^1\d{10}$/.test(this.form.phone))
         return common_vendor.index.showToast({ title: "请填写有效电话", icon: "none" });
       const value = {
-        name: this.form.name.trim(),
-        region: this.form.region,
-        detail: this.form.detail.trim(),
-        contact: this.form.contact.trim(),
-        phone: this.form.phone,
+        contactName: this.form.contact.trim(),
+        contactPhone: this.form.phone,
+        addressName: this.form.name.trim(),
+        province: this.form.region[0] || "",
+        city: this.form.region[1] || "",
+        district: this.form.region[2] || "",
+        detailAddress: this.form.detail.trim(),
+        longitude: this.form.longitude || null,
+        latitude: this.form.latitude || null,
         isDefault: this.form.isDefault
       };
       const editingId = this.editIndex < 0 ? "" : this.addresses[this.editIndex].id;
@@ -59,7 +69,7 @@ const _sfc_main = {
       }).then(() => {
         this.editing = false;
         this.loadAddresses();
-        common_vendor.index.showToast({ title: "地址已保存", icon: "success" });
+        common_vendor.index.showToast({ title: "服务区域已保存", icon: "success" });
       }).catch(() => {
       });
     },
@@ -69,12 +79,12 @@ const _sfc_main = {
         method: "POST"
       }).then(() => {
         this.loadAddresses();
-        common_vendor.index.showToast({ title: "默认地址已更新", icon: "none" });
+        common_vendor.index.showToast({ title: "默认服务区域已更新", icon: "none" });
       }).catch(() => {
       });
     },
     remove(index) {
-      common_vendor.index.showModal({ title: "删除地址", content: "确定删除此服务地址吗？", success: (result) => {
+      common_vendor.index.showModal({ title: "删除服务区域", content: "确定删除该服务区域吗？", success: (result) => {
         if (!result.confirm)
           return;
         utils_request.request({
@@ -82,7 +92,7 @@ const _sfc_main = {
           method: "DELETE"
         }).then(() => {
           this.loadAddresses();
-          common_vendor.index.showToast({ title: "地址已删除", icon: "none" });
+          common_vendor.index.showToast({ title: "服务区域已删除", icon: "none" });
         }).catch(() => {
         });
       } });
@@ -117,7 +127,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, !$data.addresses.length && !$data.editing ? {} : {}, {
     c: $data.editing
   }, $data.editing ? {
-    d: common_vendor.t($data.editIndex < 0 ? "新增服务地址" : "编辑服务地址"),
+    d: common_vendor.t($data.editIndex < 0 ? "新增服务区域" : "编辑服务区域"),
     e: $data.form.name,
     f: common_vendor.o(($event) => $data.form.name = $event.detail.value, "d8"),
     g: common_vendor.t($data.form.region.length ? $data.form.region.join(" / ") : "请选择所在地区"),
@@ -130,13 +140,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     n: $data.form.phone,
     o: common_vendor.o(($event) => $data.form.phone = $event.detail.value, "c6"),
     p: $data.form.isDefault,
-    q: common_vendor.o(($event) => $data.form.isDefault = $event.detail.value, "d8"),
-    r: common_vendor.o(($event) => $data.editing = false, "a5"),
-    s: common_vendor.o((...args) => $options.save && $options.save(...args), "64")
+    q: common_vendor.o(($event) => $data.form.isDefault = $event.detail.value, "9e"),
+    r: common_vendor.o(($event) => $data.editing = false, "0a"),
+    s: common_vendor.o((...args) => $options.save && $options.save(...args), "d6")
   } : {}, {
     t: !$data.editing
   }, !$data.editing ? {
-    v: common_vendor.o((...args) => $options.add && $options.add(...args), "53")
+    v: common_vendor.o((...args) => $options.add && $options.add(...args), "47")
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9db9159f"]]);

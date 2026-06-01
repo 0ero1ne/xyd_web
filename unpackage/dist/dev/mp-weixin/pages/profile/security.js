@@ -30,10 +30,10 @@ const _sfc_main = {
       common_vendor.index.navigateTo({ url: "/pages/profile/edit-profile" });
     },
     privacy() {
-      common_vendor.index.showModal({ title: "信息使用说明", content: "头像、昵称和主动填写的电话用于账户展示及服务联络；地址用于作业服务。", showCancel: false });
+      common_vendor.index.showModal({ title: "信息使用说明", content: "头像、昵称、电话和服务区域用于飞手账号展示、订单沟通与作业服务。", showCancel: false });
     },
     clearData() {
-      common_vendor.index.showModal({ title: "清除资料", content: "将清除您填写的个人资料和服务地址，是否继续？", success: (result) => {
+      common_vendor.index.showModal({ title: "清除资料", content: "将清除本地飞手资料和服务区域，是否继续？", success: (result) => {
         if (!result.confirm)
           return;
         common_vendor.index.removeStorageSync("userInfo");
@@ -46,7 +46,7 @@ const _sfc_main = {
       } });
     },
     logout() {
-      common_vendor.index.showModal({ title: "退出登录", content: "退出后仍可继续浏览公开服务内容。", success: (result) => {
+      common_vendor.index.showModal({ title: "退出登录", content: "退出后需要重新登录才能使用飞手接单服务。", success: (result) => {
         if (!result.confirm)
           return;
         common_vendor.index.removeStorageSync("token");
@@ -62,10 +62,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.t($data.isWechatBound ? "已绑定" : "未绑定"),
     b: common_vendor.t($options.maskedPhone),
-    c: common_vendor.o((...args) => $options.editProfile && $options.editProfile(...args), "dd"),
-    d: common_vendor.o((...args) => $options.privacy && $options.privacy(...args), "60"),
-    e: common_vendor.o((...args) => $options.clearData && $options.clearData(...args), "7d"),
-    f: common_vendor.o((...args) => $options.logout && $options.logout(...args), "13")
+    c: common_vendor.o((...args) => $options.editProfile && $options.editProfile(...args), "2a"),
+    d: common_vendor.o((...args) => $options.privacy && $options.privacy(...args), "dc"),
+    e: common_vendor.o((...args) => $options.clearData && $options.clearData(...args), "93"),
+    f: common_vendor.o((...args) => $options.logout && $options.logout(...args), "d2")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-f3856239"]]);

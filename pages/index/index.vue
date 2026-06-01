@@ -1,24 +1,48 @@
 <template>
 	<view class="login-page">
 		<view class="hero">
-			<view class="brand">
-				<text class="brand-icon">+</text>
+			<view class="brand-mark">
+				<text class="brand-icon">✦</text>
 			</view>
-			<text class="app-name">智慧植保</text>
-			<text class="subtitle">连接农户与专业无人机飞手</text>
+			<text class="app-name">云航植保飞手端</text>
+			<text class="subtitle">无人机作业接单、履约与账号管理入口</text>
+			<view class="hero-metrics">
+				<view class="metric">
+					<text class="metric-value">24h</text>
+					<text class="metric-label">任务响应</text>
+				</view>
+				<view class="metric">
+					<text class="metric-value">LBS</text>
+					<text class="metric-label">附近订单</text>
+				</view>
+				<view class="metric">
+					<text class="metric-value">Pilot</text>
+					<text class="metric-label">飞手入住</text>
+				</view>
+			</view>
 		</view>
 
 		<view class="login-card">
-			<text class="card-title">微信登录</text>
-			<text class="card-tip">登录为自愿选择，您也可以先浏览平台服务</text>
+			<view class="card-head">
+				<text class="card-title">飞手微信登录</text>
+				<text class="card-tip">仅支持无人机飞手入住，登录后进入接单工作台</text>
+			</view>
+
+			<view class="pilot-badge">
+				<view class="badge-icon">飞</view>
+				<view class="badge-copy">
+					<text class="badge-title">专业飞手身份</text>
+					<text class="badge-desc">用于承接植保作业、维护资料和接收订单通知</text>
+				</view>
+			</view>
 
 			<view class="wechat-profile">
 				<view v-if="!canCollectProfile" class="avatar-picker avatar-disabled" @click="promptProfileAccess">
 					<text class="avatar-placeholder">头像</text>
 				</view>
 				<button v-else class="avatar-picker" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-						<image v-if="avatarUrl" class="avatar-image" :src="avatarUrl" mode="aspectFill"></image>
-						<text v-else class="avatar-placeholder">头像</text>
+					<image v-if="avatarUrl" class="avatar-image" :src="avatarUrl" mode="aspectFill"></image>
+					<text v-else class="avatar-placeholder">头像</text>
 				</button>
 				<view class="nickname-box">
 					<text class="profile-label">微信昵称</text>
@@ -34,28 +58,9 @@
 				</view>
 			</view>
 
-			<view class="role-list">
-				<view
-					v-for="role in roles"
-					:key="role.value"
-					class="role-card"
-					:class="{ active: selectedRole === role.value }"
-					@click="selectedRole = role.value"
-				>
-					<view class="role-icon">{{ role.icon }}</view>
-					<view class="role-info">
-						<text class="role-name">{{ role.label }}</text>
-						<text class="role-desc">{{ role.description }}</text>
-					</view>
-					<view class="radio" :class="{ checked: selectedRole === role.value }">
-						<view v-if="selectedRole === role.value" class="radio-dot"></view>
-					</view>
-				</view>
-			</view>
-
 			<checkbox-group class="agreement" @change="onAgreementChange">
 				<label class="agreement-label">
-					<checkbox value="accepted" :checked="agreementChecked" color="#237a4d" />
+					<checkbox value="accepted" :checked="agreementChecked" color="#111827" />
 					<text>我已阅读并同意</text>
 				</label>
 				<text class="agreement-link" @click.stop="showDocument('service')">《用户服务协议》</text>
@@ -64,9 +69,8 @@
 			</checkbox-group>
 
 			<button class="login-button" :loading="isLoggingIn" :disabled="isLoggingIn" @click="login">
-				{{ isLoggingIn ? '登录中' : '微信登录并进入平台' }}
+				{{ isLoggingIn ? '登录中' : '微信登录并入住飞手端' }}
 			</button>
-			<button class="browse-button" @click="browseFirst">暂不登录，先浏览服务</button>
 		</view>
 	</view>
 </template>
@@ -74,37 +78,25 @@
 <script>
 	import request from '../../utils/request.js'
 
+	const PILOT_ROLE = {
+		value: 'pilot',
+		label: '无人机飞手'
+	}
+
 	export default {
 		data() {
 			return {
-				selectedRole: 'farmer',
+				selectedRole: PILOT_ROLE.value,
 				avatarUrl: '',
 				nickname: '',
 				agreementChecked: false,
 				privacyAuthorized: false,
-				isLoggingIn: false,
-				roles: [
-					{
-						value: 'farmer',
-						label: '农户',
-						icon: '田',
-						description: '发布作业需求，查看服务进度'
-					},
-					{
-						value: 'pilot',
-						label: '无人机飞手',
-						icon: '飞',
-						description: '选择附近任务，执行植保作业'
-					}
-				]
+				isLoggingIn: false
 			}
 		},
 		onShow() {
-			const role = uni.getStorageSync('planeUserRole')
 			const userInfo = uni.getStorageSync('userInfo')
-			if (role) {
-				this.selectedRole = role
-			}
+			this.selectedRole = PILOT_ROLE.value
 			if (userInfo) {
 				this.avatarUrl = userInfo.avatarUrl || ''
 				this.nickname = userInfo.nickname || ''
@@ -116,11 +108,6 @@
 			}
 		},
 		methods: {
-			browseFirst() {
-				uni.switchTab({
-					url: '/pages/menu/menu'
-				})
-			},
 			onAgreementChange(event) {
 				this.agreementChecked = event.detail.value.includes('accepted')
 				if (!this.agreementChecked) {
@@ -168,8 +155,8 @@
 				uni.showModal({
 					title: isPrivacy ? '隐私政策' : '用户服务协议',
 					content: isPrivacy
-						? '为完成微信登录和展示个人资料，我们会在您同意后收集您选择的头像、昵称及登录凭证，用于账户识别与页面展示。'
-						: '使用本平台服务前，请确认您提供的信息真实有效，并遵守平台发布任务及服务交易相关规则。',
+						? '为完成微信登录和展示飞手资料，我们会在您同意后收集您选择的头像、昵称及登录凭证，用于账户识别与页面展示。'
+						: '使用飞手端服务前，请确认您提供的信息真实有效，并遵守平台接单、履约及服务交易相关规则。',
 					showCancel: false,
 					confirmText: '我已阅读'
 				})
@@ -205,7 +192,6 @@
 					return
 				}
 
-				const role = this.roles.find(item => item.value === this.selectedRole)
 				this.isLoggingIn = true
 				// #ifdef MP-WEIXIN
 				uni.login({
@@ -219,7 +205,7 @@
 							})
 							return
 						}
-						this.requestWxLogin(loginResult.code, role, nickname)
+						this.requestWxLogin(loginResult.code, nickname)
 					},
 					fail: () => {
 						this.isLoggingIn = false
@@ -238,20 +224,21 @@
 				})
 				// #endif
 			},
-			requestWxLogin(code, role, nickname) {
+			requestWxLogin(code, nickname) {
 				request({
 					url: '/api/auth/wx-login',
 					method: 'POST',
 					data: {
 						code,
 						nickname,
-						avatarUrl: this.avatarUrl
+						avatarUrl: this.avatarUrl,
+						userIdentity: PILOT_ROLE.value
 					}
 				}).then((response) => {
 					if (response.code !== 200 || !response.data || !response.data.token || !response.data.userInfo) {
 						throw new Error(response.message || '登录失败，请重试')
 					}
-					this.completeLogin(role, response.data)
+					this.completeLogin(response.data)
 				}).catch((error) => {
 					uni.showToast({
 						title: error.message || '登录失败，请重试',
@@ -261,11 +248,11 @@
 					this.isLoggingIn = false
 				})
 			},
-			completeLogin(role, loginData) {
+			completeLogin(loginData) {
 				uni.setStorageSync('token', loginData.token)
 				uni.setStorageSync('userInfo', loginData.userInfo)
-				uni.setStorageSync('planeUserRole', this.selectedRole)
-				uni.setStorageSync('planeUserRoleName', role.label)
+				uni.setStorageSync('planeUserRole', PILOT_ROLE.value)
+				uni.setStorageSync('planeUserRoleName', PILOT_ROLE.label)
 				uni.switchTab({
 					url: '/pages/menu/menu'
 				})
@@ -278,77 +265,160 @@
 	.login-page {
 		box-sizing: border-box;
 		min-height: 100vh;
-		padding: calc(var(--status-bar-height) + 88rpx) 32rpx 48rpx;
-		background: linear-gradient(180deg, #eaf5e9 0%, #f5f7f2 46%, #f5f7f2 100%);
+		padding: calc(var(--status-bar-height) + 72rpx) 30rpx 52rpx;
+		background:
+			radial-gradient(circle at 20% 0%, rgba(22, 163, 74, 0.2) 0, rgba(22, 163, 74, 0) 34%),
+			linear-gradient(155deg, #101827 0%, #17312e 46%, #eef4ef 47%, #f7f8f5 100%);
 	}
 
 	.hero {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		margin-bottom: 62rpx;
+		align-items: flex-start;
+		padding: 24rpx 8rpx 42rpx;
 	}
 
-	.brand {
+	.brand-mark {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 112rpx;
-		height: 112rpx;
-		border-radius: 30rpx;
-		margin-bottom: 28rpx;
-		background: #237a4d;
-		box-shadow: 0 18rpx 34rpx rgba(35, 122, 77, 0.2);
+		width: 104rpx;
+		height: 104rpx;
+		border: 1rpx solid rgba(255, 255, 255, 0.28);
+		border-radius: 26rpx;
+		background: rgba(255, 255, 255, 0.1);
+		box-shadow: 0 22rpx 44rpx rgba(0, 0, 0, 0.18);
 	}
 
 	.brand-icon {
-		color: #fff;
-		font-size: 62rpx;
-		font-weight: 300;
-		line-height: 1;
+		color: #d9f99d;
+		font-size: 50rpx;
 	}
 
 	.app-name {
-		color: #14251d;
+		margin-top: 32rpx;
+		color: #fff;
 		font-size: 52rpx;
 		font-weight: 700;
-		letter-spacing: 3rpx;
+		line-height: 1.22;
 	}
 
 	.subtitle {
 		margin-top: 16rpx;
-		color: #6e7c74;
-		font-size: 27rpx;
+		color: rgba(255, 255, 255, 0.74);
+		font-size: 26rpx;
+		line-height: 1.55;
+	}
+
+	.hero-metrics {
+		display: flex;
+		width: 100%;
+		margin-top: 38rpx;
+		border: 1rpx solid rgba(255, 255, 255, 0.14);
+		border-radius: 22rpx;
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(16rpx);
+	}
+
+	.metric {
+		flex: 1;
+		padding: 22rpx 12rpx;
+		text-align: center;
+	}
+
+	.metric-value {
+		display: block;
+		color: #f8fafc;
+		font-size: 30rpx;
+		font-weight: 700;
+	}
+
+	.metric-label {
+		display: block;
+		margin-top: 8rpx;
+		color: rgba(255, 255, 255, 0.62);
+		font-size: 21rpx;
 	}
 
 	.login-card {
-		padding: 44rpx 30rpx 36rpx;
-		border-radius: 30rpx;
-		background: #fff;
-		box-shadow: 0 10rpx 38rpx rgba(35, 56, 44, 0.06);
+		padding: 38rpx 30rpx 34rpx;
+		border: 1rpx solid rgba(15, 23, 42, 0.06);
+		border-radius: 28rpx;
+		background: rgba(255, 255, 255, 0.96);
+		box-shadow: 0 26rpx 70rpx rgba(15, 23, 42, 0.12);
+	}
+
+	.card-head {
+		margin-bottom: 28rpx;
 	}
 
 	.card-title {
 		display: block;
-		color: #18261f;
+		color: #111827;
 		font-size: 36rpx;
-		font-weight: 600;
+		font-weight: 700;
 	}
 
 	.card-tip {
 		display: block;
-		margin: 10rpx 0 28rpx;
-		color: #7b887f;
-		font-size: 25rpx;
+		margin-top: 10rpx;
+		color: #6b7280;
+		font-size: 24rpx;
+		line-height: 1.5;
 	}
 
+	.pilot-badge,
 	.wechat-profile {
 		display: flex;
 		align-items: center;
-		padding: 20rpx;
-		margin-bottom: 30rpx;
+		box-sizing: border-box;
+		border-radius: 22rpx;
+		background: #f4f7f4;
+	}
+
+	.pilot-badge {
+		padding: 22rpx;
+		margin-bottom: 22rpx;
+		border: 1rpx solid #e5e7eb;
+	}
+
+	.badge-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 76rpx;
+		height: 76rpx;
+		margin-right: 20rpx;
 		border-radius: 20rpx;
-		background: #f5f8f4;
+		color: #f9fafb;
+		font-size: 30rpx;
+		font-weight: 700;
+		background: linear-gradient(135deg, #111827, #166534);
+	}
+
+	.badge-copy {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.badge-title {
+		color: #111827;
+		font-size: 29rpx;
+		font-weight: 700;
+	}
+
+	.badge-desc {
+		margin-top: 8rpx;
+		color: #6b7280;
+		font-size: 23rpx;
+		line-height: 1.45;
+	}
+
+	.wechat-profile {
+		padding: 20rpx;
+		margin-bottom: 26rpx;
 	}
 
 	.avatar-picker {
@@ -360,16 +430,13 @@
 		padding: 0;
 		margin: 0 22rpx 0 0;
 		border-radius: 50%;
-		background: #e1f2e5;
+		background: #e5efe8;
 		overflow: hidden;
 	}
 
-	.avatar-picker::after {
+	.avatar-picker::after,
+	.login-button::after {
 		border: none;
-	}
-
-	.avatar-disabled {
-		box-sizing: border-box;
 	}
 
 	.avatar-image {
@@ -378,7 +445,7 @@
 	}
 
 	.avatar-placeholder {
-		color: #237a4d;
+		color: #166534;
 		font-size: 24rpx;
 	}
 
@@ -390,120 +457,22 @@
 	.profile-label {
 		display: block;
 		margin-bottom: 10rpx;
-		color: #27382f;
-		font-size: 25rpx;
+		color: #374151;
+		font-size: 24rpx;
 	}
 
 	.nickname-input {
-		height: 42rpx;
-		color: #18261f;
+		height: 44rpx;
+		color: #111827;
 		font-size: 29rpx;
-	}
-
-	.role-card {
-		display: flex;
-		align-items: center;
-		box-sizing: border-box;
-		height: 132rpx;
-		margin-bottom: 22rpx;
-		padding: 20rpx;
-		border: 2rpx solid #e6eade;
-		border-radius: 22rpx;
-		background: #fff;
-	}
-
-	.role-card.active {
-		border-color: #237a4d;
-		background: #f0f8f1;
-	}
-
-	.role-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 78rpx;
-		height: 78rpx;
-		border-radius: 18rpx;
-		margin-right: 20rpx;
-		color: #237a4d;
-		font-size: 34rpx;
-		font-weight: 600;
-		background: #e1f2e5;
-	}
-
-	.role-info {
-		display: flex;
-		flex: 1;
-		flex-direction: column;
-	}
-
-	.role-name {
-		color: #1e3027;
-		font-size: 31rpx;
-		font-weight: 600;
-	}
-
-	.role-desc {
-		margin-top: 8rpx;
-		color: #76847a;
-		font-size: 23rpx;
-	}
-
-	.radio {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 34rpx;
-		height: 34rpx;
-		border: 2rpx solid #cfd7cd;
-		border-radius: 50%;
-	}
-
-	.radio.checked {
-		border-color: #237a4d;
-	}
-
-	.radio-dot {
-		width: 20rpx;
-		height: 20rpx;
-		border-radius: 50%;
-		background: #237a4d;
-	}
-
-	.login-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 94rpx;
-		margin-top: 28rpx;
-		border-radius: 18rpx;
-		color: #fff;
-		font-size: 31rpx;
-		background: #237a4d;
-	}
-
-	.login-button::after {
-		border: none;
-	}
-
-	.browse-button {
-		height: 82rpx;
-		margin-top: 18rpx;
-		color: #237a4d;
-		font-size: 28rpx;
-		background: transparent;
-	}
-
-	.browse-button::after {
-		border: none;
 	}
 
 	.agreement {
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		margin-top: 26rpx;
-		color: #7e8b82;
+		margin-top: 8rpx;
+		color: #6b7280;
 		font-size: 22rpx;
 		line-height: 40rpx;
 	}
@@ -519,6 +488,23 @@
 	}
 
 	.agreement-link {
-		color: #237a4d;
+		color: #166534;
+		font-weight: 600;
+	}
+
+	.login-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 94rpx;
+		line-height: 94rpx;
+		margin-top: 30rpx;
+		border-radius: 18rpx;
+		color: #fff;
+		font-size: 31rpx;
+		font-weight: 600;
+		text-align: center;
+		background: linear-gradient(135deg, #111827, #166534);
+		box-shadow: 0 18rpx 32rpx rgba(17, 24, 39, 0.18);
 	}
 </style>

@@ -3,21 +3,16 @@ const common_vendor = require("../../common/vendor.js");
 const utils_request = require("../../utils/request.js");
 const _sfc_main = {
   data() {
-    return { role: "farmer", form: { avatarUrl: "", nickname: "", realName: "", phone: "", userIdentity: "" } };
+    return { role: "pilot", form: { avatarUrl: "", nickname: "", realName: "", phone: "", userIdentity: "pilot" } };
   },
   computed: {
     roleName() {
-      const identity = this.form.userIdentity || this.role;
-      if (identity === "farmer")
-        return "农户用户";
-      if (identity === "pilot")
-        return "无人机飞手";
-      return identity;
+      return "无人机飞手";
     }
   },
   onLoad() {
     const user = common_vendor.index.getStorageSync("userInfo") || {};
-    this.role = common_vendor.index.getStorageSync("planeUserRole") || "farmer";
+    this.role = "pilot";
     this.form.avatarUrl = user.avatarUrl || "";
     this.form.nickname = user.nickname || "";
     this.loadProfile();
@@ -40,11 +35,10 @@ const _sfc_main = {
           nickname: data.nickname || this.form.nickname,
           realName: data.realName || "",
           phone: data.phone || "",
-          userIdentity: data.userIdentity || ""
+          userIdentity: "pilot"
         };
-        if (data.userIdentity) {
-          common_vendor.index.setStorageSync("planeUserRoleName", data.userIdentity);
-        }
+        common_vendor.index.setStorageSync("planeUserRole", "pilot");
+        common_vendor.index.setStorageSync("planeUserRoleName", this.roleName);
       }).catch(() => {
       });
     },
@@ -62,7 +56,7 @@ const _sfc_main = {
           avatarUrl: this.form.avatarUrl,
           realName: this.form.realName.trim(),
           phone: this.form.phone,
-          userIdentity: this.form.userIdentity || this.role
+          userIdentity: "pilot"
         }
       }).then(() => {
         common_vendor.index.setStorageSync("userInfo", {
@@ -74,6 +68,8 @@ const _sfc_main = {
           realName: this.form.realName.trim(),
           phone: this.form.phone
         });
+        common_vendor.index.setStorageSync("planeUserRole", "pilot");
+        common_vendor.index.setStorageSync("planeUserRoleName", this.roleName);
         common_vendor.index.showToast({ title: "资料已保存", icon: "success" });
       }).catch(() => {
       });
@@ -88,13 +84,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     c: common_vendor.o((...args) => $options.chooseAvatar && $options.chooseAvatar(...args), "db"),
     d: $data.form.nickname,
-    e: common_vendor.o(($event) => $data.form.nickname = $event.detail.value, "48"),
+    e: common_vendor.o(($event) => $data.form.nickname = $event.detail.value, "36"),
     f: $data.form.realName,
-    g: common_vendor.o(($event) => $data.form.realName = $event.detail.value, "99"),
+    g: common_vendor.o(($event) => $data.form.realName = $event.detail.value, "84"),
     h: $data.form.phone,
-    i: common_vendor.o(($event) => $data.form.phone = $event.detail.value, "85"),
+    i: common_vendor.o(($event) => $data.form.phone = $event.detail.value, "72"),
     j: common_vendor.t($options.roleName),
-    k: common_vendor.o((...args) => $options.save && $options.save(...args), "7b")
+    k: common_vendor.o((...args) => $options.save && $options.save(...args), "9a")
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-4438b7d4"]]);

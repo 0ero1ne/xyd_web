@@ -12,19 +12,19 @@
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "智慧植保",
+    "navigationBarTitleText": "云航植保飞手端",
     "navigationBarBackgroundColor": "#FFFFFF",
-    "backgroundColor": "#F5F7F2"
+    "backgroundColor": "#F6F7F4"
   },
   "tabBar": {
     "color": "#7A847B",
-    "selectedColor": "#237A4D",
+    "selectedColor": "#166534",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/menu/menu",
-        "text": "选单"
+        "text": "工作台"
       },
       {
         "pagePath": "pages/orders/orders",

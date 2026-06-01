@@ -7,7 +7,7 @@ const _sfc_main = {
       items: [
         { key: "order", title: "订单进度通知", desc: "接单、作业进度及完成状态提醒" },
         { key: "system", title: "系统通知", desc: "平台规则和账号安全相关消息" },
-        { key: "promotion", title: "服务推荐", desc: "附近任务及植保服务信息" }
+        { key: "promotion", title: "任务推荐", desc: "附近任务及植保服务机会提醒" }
       ]
     };
   },
@@ -34,7 +34,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     b: $data.settings.quietHours,
-    c: common_vendor.o(($event) => $options.change("quietHours", $event), "7f")
+    c: common_vendor.o(($event) => $options.change("quietHours", $event), "62")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b7870fea"]]);

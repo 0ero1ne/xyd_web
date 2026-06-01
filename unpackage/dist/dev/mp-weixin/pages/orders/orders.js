@@ -1,64 +1,198 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const api_order = require("../../api/order.js");
+const isPresent = (value) => value !== void 0 && value !== null && value !== "";
+const unwrapData = (response) => {
+  if (response && response.code !== void 0 && response.code !== 200) {
+    throw new Error(response.message || "请求失败");
+  }
+  return response && response.data !== void 0 ? response.data : response;
+};
 const _sfc_main = {
   data() {
     return {
-      activeTab: "全部",
-      tabs: ["全部", "进行中", "已完成"],
-      orders: [
-        {
-          id: "订单 2026052501",
-          status: "进行中",
-          crop: "水稻病虫防治",
-          address: "青禾村东侧 3 号田",
-          area: "32 亩",
-          date: "05-25 09:30",
-          amount: "¥960"
-        },
-        {
-          id: "订单 2026051803",
-          status: "已完成",
-          crop: "玉米叶面肥喷洒",
-          address: "青禾村示范田",
-          area: "18 亩",
-          date: "05-18 15:00",
-          amount: "¥540"
-        }
-      ]
+      activeStatus: "all",
+      tabs: [
+        { label: "全部", value: "all" },
+        { label: "进行中", value: "running" },
+        { label: "已完成", value: "completed" }
+      ],
+      orders: [],
+      loading: false,
+      completingOrderId: null,
+      page: 1,
+      size: 10,
+      hasMore: true
     };
   },
-  computed: {
-    filteredOrders() {
-      if (this.activeTab === "全部") {
-        return this.orders;
+  onShow() {
+    this.activeStatus = "all";
+    this.loadOrders(true);
+  },
+  onPullDownRefresh() {
+    this.loadOrders(true).finally(() => {
+      common_vendor.index.stopPullDownRefresh();
+    });
+  },
+  onReachBottom() {
+    if (!this.loading && this.hasMore) {
+      this.loadOrders(false);
+    }
+  },
+  methods: {
+    changeTab(status) {
+      if (this.activeStatus === status) {
+        return;
       }
-      return this.orders.filter((order) => order.status === this.activeTab);
+      this.activeStatus = status;
+      this.loadOrders(true);
+    },
+    loadOrders(reset = false) {
+      if (this.loading) {
+        return Promise.resolve();
+      }
+      if (reset) {
+        this.page = 1;
+        this.hasMore = true;
+      }
+      this.loading = true;
+      return api_order.getMyOrders({
+        status: this.activeStatus,
+        page: this.page,
+        size: this.size
+      }).then((response) => {
+        const data = unwrapData(response) || {};
+        const records = Array.isArray(data.records) ? data.records : [];
+        this.orders = reset ? records : this.orders.concat(records);
+        const total = Number(data.total || 0);
+        const currentPage = Number(data.page || this.page);
+        const pageSize = Number(data.size || this.size);
+        this.page = currentPage + 1;
+        this.hasMore = total ? this.orders.length < total : records.length >= pageSize;
+      }).catch(() => {
+        if (reset) {
+          this.orders = [];
+        }
+        common_vendor.index.showToast({
+          title: "订单加载失败",
+          icon: "none"
+        });
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    formatOrderNo(orderNo) {
+      if (!orderNo) {
+        return "--";
+      }
+      const text = String(orderNo);
+      return text.length > 10 ? text.slice(-10) : text;
+    },
+    formatArea(areaMu) {
+      return `${isPresent(areaMu) ? areaMu : "--"} 亩`;
+    },
+    formatIncome(order) {
+      const income = isPresent(order.actualIncome) ? order.actualIncome : order.expectedIncome;
+      return `¥${isPresent(income) ? income : "--"}`;
+    },
+    formatOrderTime(order) {
+      const time = order.completedTime || order.acceptedTime || order.createTime;
+      if (!time) {
+        return "--";
+      }
+      const date = new Date(String(time).replace(/-/g, "/"));
+      if (Number.isNaN(date.getTime())) {
+        return "--";
+      }
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hour = String(date.getHours()).padStart(2, "0");
+      const minute = String(date.getMinutes()).padStart(2, "0");
+      return `${month}-${day} ${hour}:${minute}`;
+    },
+    statusClass(order) {
+      const label = order.statusLabel || "";
+      if (label.indexOf("取消") !== -1 || order.orderStatus === 4) {
+        return "cancelled";
+      }
+      if (label.indexOf("完成") !== -1 || order.orderStatus === 3) {
+        return "completed";
+      }
+      return "running";
+    },
+    canComplete(order) {
+      return order && (order.orderStatus === 1 || order.orderStatus === 2);
+    },
+    handleCompleteOrder(order) {
+      if (!order || !order.orderId || this.completingOrderId) {
+        return;
+      }
+      common_vendor.index.showModal({
+        title: "确认完成",
+        content: "确认该任务已经完成吗？",
+        success: (result) => {
+          if (result.confirm) {
+            this.submitCompleteOrder(order.orderId);
+          }
+        }
+      });
+    },
+    submitCompleteOrder(orderId) {
+      this.completingOrderId = orderId;
+      api_order.completeOrder(orderId).then((response) => {
+        unwrapData(response);
+        common_vendor.index.showToast({
+          title: "已完成",
+          icon: "success"
+        });
+        this.loadOrders(true);
+      }).catch(() => {
+        common_vendor.index.showToast({
+          title: "订单操作失败",
+          icon: "none"
+        });
+      }).finally(() => {
+        this.completingOrderId = null;
+      });
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
+  return common_vendor.e({
     a: common_vendor.f($data.tabs, (tab, k0, i0) => {
       return {
-        a: common_vendor.t(tab),
-        b: tab,
-        c: $data.activeTab === tab ? 1 : "",
-        d: common_vendor.o(($event) => $data.activeTab = tab, tab)
+        a: common_vendor.t(tab.label),
+        b: tab.value,
+        c: $data.activeStatus === tab.value ? 1 : "",
+        d: common_vendor.o(($event) => $options.changeTab(tab.value), tab.value)
       };
     }),
-    b: common_vendor.f($options.filteredOrders, (order, k0, i0) => {
-      return {
-        a: common_vendor.t(order.id),
-        b: common_vendor.t(order.status),
-        c: common_vendor.t(order.crop),
-        d: common_vendor.t(order.address),
-        e: common_vendor.t(order.area),
-        f: common_vendor.t(order.date),
-        g: common_vendor.t(order.amount),
-        h: order.id
-      };
-    })
-  };
+    b: $data.loading && $data.page === 1
+  }, $data.loading && $data.page === 1 ? {} : !$data.orders.length ? {} : common_vendor.e({
+    d: common_vendor.f($data.orders, (order, k0, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t($options.formatOrderNo(order.orderNo)),
+        b: common_vendor.t(order.statusLabel || "未知"),
+        c: common_vendor.n($options.statusClass(order)),
+        d: common_vendor.t(order.taskTitle || "未命名任务"),
+        e: common_vendor.t(order.locationName || "未知地点"),
+        f: common_vendor.t($options.formatArea(order.areaMu)),
+        g: common_vendor.t($options.formatOrderTime(order)),
+        h: common_vendor.t($options.formatIncome(order)),
+        i: $options.canComplete(order)
+      }, $options.canComplete(order) ? {
+        j: $data.completingOrderId === order.orderId,
+        k: common_vendor.o(($event) => $options.handleCompleteOrder(order), order.orderId || order.orderNo)
+      } : {}, {
+        l: order.orderId || order.orderNo
+      });
+    }),
+    e: $data.loading
+  }, $data.loading ? {} : !$data.hasMore ? {} : {}, {
+    f: !$data.hasMore
+  }), {
+    c: !$data.orders.length
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1acc51a1"]]);
 wx.createPage(MiniProgramPage);

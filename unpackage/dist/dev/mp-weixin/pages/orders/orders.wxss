@@ -3,7 +3,7 @@
 		box-sizing: border-box;
 		min-height: 100vh;
 		padding: 24rpx 28rpx 48rpx;
-		background: #f5f7f2;
+		background: #f6f7f4;
 }
 .status-tabs.data-v-1acc51a1 {
 		display: flex;
@@ -11,6 +11,7 @@
 		margin-bottom: 28rpx;
 		border-radius: 18rpx;
 		background: #fff;
+		box-shadow: 0 12rpx 32rpx rgba(17, 24, 39, 0.05);
 }
 .status-tab.data-v-1acc51a1 {
 		flex: 1;
@@ -21,8 +22,8 @@
 		text-align: center;
 }
 .status-tab.active.data-v-1acc51a1 {
-		color: #237a4d;
-		font-weight: 600;
+		color: #111827;
+		font-weight: 700;
 		background: #edf6ef;
 }
 .order-card.data-v-1acc51a1 {
@@ -30,8 +31,10 @@
 		flex-direction: column;
 		margin-bottom: 20rpx;
 		padding: 28rpx;
+		border: 1rpx solid #edf0ed;
 		border-radius: 22rpx;
 		background: #fff;
+		box-shadow: 0 12rpx 32rpx rgba(17, 24, 39, 0.05);
 }
 .order-top.data-v-1acc51a1,
 	.order-bottom.data-v-1acc51a1 {
@@ -47,19 +50,29 @@
 .status.data-v-1acc51a1 {
 		padding: 8rpx 15rpx;
 		border-radius: 20rpx;
-		color: #237a4d;
 		font-size: 23rpx;
+}
+.status.running.data-v-1acc51a1 {
+		color: #166534;
 		background: #e8f4ea;
+}
+.status.completed.data-v-1acc51a1 {
+		color: #2f5d43;
+		background: #eef6ef;
+}
+.status.cancelled.data-v-1acc51a1 {
+		color: #6b7280;
+		background: #f1f2f3;
 }
 .crop.data-v-1acc51a1 {
 		margin-top: 27rpx;
-		color: #1c2d24;
+		color: #111827;
 		font-size: 31rpx;
-		font-weight: 600;
+		font-weight: 700;
 }
 .meta.data-v-1acc51a1 {
 		margin: 12rpx 0 30rpx;
-		color: #748278;
+		color: #6b7280;
 		font-size: 25rpx;
 }
 .order-bottom.data-v-1acc51a1 {
@@ -67,7 +80,45 @@
 		border-top: 1rpx solid #eff2ec;
 }
 .amount.data-v-1acc51a1 {
-		color: #18271f;
+		color: #166534;
 		font-size: 29rpx;
+		font-weight: 800;
+}
+.order-actions.data-v-1acc51a1 {
+		display: flex;
+		align-items: center;
+}
+.complete-button.data-v-1acc51a1 {
+		margin: 0 0 0 18rpx;
+		padding: 0 24rpx;
+		min-width: 100rpx;
+		height: 56rpx;
+		line-height: 56rpx;
+		border-radius: 14rpx;
+		color: #fff;
+		font-size: 24rpx;
 		font-weight: 600;
+		background: #166534;
+}
+.complete-button.data-v-1acc51a1::after {
+		border: none;
+}
+.state-card.data-v-1acc51a1,
+	.load-more.data-v-1acc51a1 {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #7a8380;
+		font-size: 27rpx;
+}
+.state-card.data-v-1acc51a1 {
+		min-height: 180rpx;
+		border: 1rpx solid #edf0ed;
+		border-radius: 22rpx;
+		background: #fff;
+		box-shadow: 0 12rpx 32rpx rgba(17, 24, 39, 0.05);
+}
+.load-more.data-v-1acc51a1 {
+		padding: 20rpx 0 8rpx;
+		font-size: 24rpx;
 }

@@ -1,37 +1,24 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const utils_request = require("../../utils/request.js");
+const PILOT_ROLE = {
+  value: "pilot",
+  label: "无人机飞手"
+};
 const _sfc_main = {
   data() {
     return {
-      selectedRole: "farmer",
+      selectedRole: PILOT_ROLE.value,
       avatarUrl: "",
       nickname: "",
       agreementChecked: false,
       privacyAuthorized: false,
-      isLoggingIn: false,
-      roles: [
-        {
-          value: "farmer",
-          label: "农户",
-          icon: "田",
-          description: "发布作业需求，查看服务进度"
-        },
-        {
-          value: "pilot",
-          label: "无人机飞手",
-          icon: "飞",
-          description: "选择附近任务，执行植保作业"
-        }
-      ]
+      isLoggingIn: false
     };
   },
   onShow() {
-    const role = common_vendor.index.getStorageSync("planeUserRole");
     const userInfo = common_vendor.index.getStorageSync("userInfo");
-    if (role) {
-      this.selectedRole = role;
-    }
+    this.selectedRole = PILOT_ROLE.value;
     if (userInfo) {
       this.avatarUrl = userInfo.avatarUrl || "";
       this.nickname = userInfo.nickname || "";
@@ -43,11 +30,6 @@ const _sfc_main = {
     }
   },
   methods: {
-    browseFirst() {
-      common_vendor.index.switchTab({
-        url: "/pages/menu/menu"
-      });
-    },
     onAgreementChange(event) {
       this.agreementChecked = event.detail.value.includes("accepted");
       if (!this.agreementChecked) {
@@ -92,7 +74,7 @@ const _sfc_main = {
       const isPrivacy = type === "privacy";
       common_vendor.index.showModal({
         title: isPrivacy ? "隐私政策" : "用户服务协议",
-        content: isPrivacy ? "为完成微信登录和展示个人资料，我们会在您同意后收集您选择的头像、昵称及登录凭证，用于账户识别与页面展示。" : "使用本平台服务前，请确认您提供的信息真实有效，并遵守平台发布任务及服务交易相关规则。",
+        content: isPrivacy ? "为完成微信登录和展示飞手资料，我们会在您同意后收集您选择的头像、昵称及登录凭证，用于账户识别与页面展示。" : "使用飞手端服务前，请确认您提供的信息真实有效，并遵守平台接单、履约及服务交易相关规则。",
         showCancel: false,
         confirmText: "我已阅读"
       });
@@ -127,7 +109,6 @@ const _sfc_main = {
         });
         return;
       }
-      const role = this.roles.find((item) => item.value === this.selectedRole);
       this.isLoggingIn = true;
       common_vendor.index.login({
         provider: "weixin",
@@ -140,7 +121,7 @@ const _sfc_main = {
             });
             return;
           }
-          this.requestWxLogin(loginResult.code, role, nickname);
+          this.requestWxLogin(loginResult.code, nickname);
         },
         fail: () => {
           this.isLoggingIn = false;
@@ -151,20 +132,21 @@ const _sfc_main = {
         }
       });
     },
-    requestWxLogin(code, role, nickname) {
+    requestWxLogin(code, nickname) {
       utils_request.request({
         url: "/api/auth/wx-login",
         method: "POST",
         data: {
           code,
           nickname,
-          avatarUrl: this.avatarUrl
+          avatarUrl: this.avatarUrl,
+          userIdentity: PILOT_ROLE.value
         }
       }).then((response) => {
         if (response.code !== 200 || !response.data || !response.data.token || !response.data.userInfo) {
           throw new Error(response.message || "登录失败，请重试");
         }
-        this.completeLogin(role, response.data);
+        this.completeLogin(response.data);
       }).catch((error) => {
         common_vendor.index.showToast({
           title: error.message || "登录失败，请重试",
@@ -174,11 +156,11 @@ const _sfc_main = {
         this.isLoggingIn = false;
       });
     },
-    completeLogin(role, loginData) {
+    completeLogin(loginData) {
       common_vendor.index.setStorageSync("token", loginData.token);
       common_vendor.index.setStorageSync("userInfo", loginData.userInfo);
-      common_vendor.index.setStorageSync("planeUserRole", this.selectedRole);
-      common_vendor.index.setStorageSync("planeUserRoleName", role.label);
+      common_vendor.index.setStorageSync("planeUserRole", PILOT_ROLE.value);
+      common_vendor.index.setStorageSync("planeUserRoleName", PILOT_ROLE.label);
       common_vendor.index.switchTab({
         url: "/pages/menu/menu"
       });
@@ -189,40 +171,26 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: !$options.canCollectProfile
   }, !$options.canCollectProfile ? {
-    b: common_vendor.o((...args) => $options.promptProfileAccess && $options.promptProfileAccess(...args), "99")
+    b: common_vendor.o((...args) => $options.promptProfileAccess && $options.promptProfileAccess(...args), "74")
   } : common_vendor.e({
     c: $data.avatarUrl
   }, $data.avatarUrl ? {
     d: $data.avatarUrl
   } : {}, {
-    e: common_vendor.o((...args) => $options.onChooseAvatar && $options.onChooseAvatar(...args), "c8")
+    e: common_vendor.o((...args) => $options.onChooseAvatar && $options.onChooseAvatar(...args), "cb")
   }), {
     f: $data.nickname,
     g: !$options.canCollectProfile,
     h: $options.canCollectProfile ? "点击选择微信昵称" : "请先阅读并同意协议",
-    i: common_vendor.o((...args) => $options.onNicknameInput && $options.onNicknameInput(...args), "36"),
-    j: common_vendor.f($data.roles, (role, k0, i0) => {
-      return common_vendor.e({
-        a: common_vendor.t(role.icon),
-        b: common_vendor.t(role.label),
-        c: common_vendor.t(role.description),
-        d: $data.selectedRole === role.value
-      }, $data.selectedRole === role.value ? {} : {}, {
-        e: $data.selectedRole === role.value ? 1 : "",
-        f: role.value,
-        g: $data.selectedRole === role.value ? 1 : "",
-        h: common_vendor.o(($event) => $data.selectedRole = role.value, role.value)
-      });
-    }),
-    k: $data.agreementChecked,
-    l: common_vendor.o(($event) => $options.showDocument("service"), "cb"),
-    m: common_vendor.o(($event) => $options.showDocument("privacy"), "2f"),
-    n: common_vendor.o((...args) => $options.onAgreementChange && $options.onAgreementChange(...args), "cf"),
-    o: common_vendor.t($data.isLoggingIn ? "登录中" : "微信登录并进入平台"),
+    i: common_vendor.o((...args) => $options.onNicknameInput && $options.onNicknameInput(...args), "04"),
+    j: $data.agreementChecked,
+    k: common_vendor.o(($event) => $options.showDocument("service"), "17"),
+    l: common_vendor.o(($event) => $options.showDocument("privacy"), "6e"),
+    m: common_vendor.o((...args) => $options.onAgreementChange && $options.onAgreementChange(...args), "2b"),
+    n: common_vendor.t($data.isLoggingIn ? "登录中" : "微信登录并入住飞手端"),
+    o: $data.isLoggingIn,
     p: $data.isLoggingIn,
-    q: $data.isLoggingIn,
-    r: common_vendor.o((...args) => $options.login && $options.login(...args), "0f"),
-    s: common_vendor.o((...args) => $options.browseFirst && $options.browseFirst(...args), "f9")
+    q: common_vendor.o((...args) => $options.login && $options.login(...args), "92")
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);

@@ -1,9 +1,9 @@
 
-.page.data-v-b7870fea { box-sizing: border-box; min-height: 100vh; padding: 28rpx; background: #f5f7f2;
+.page.data-v-b7870fea { box-sizing: border-box; min-height: 100vh; padding: 28rpx; background: #f6f7f4;
 }
-.tip.data-v-b7870fea { margin-bottom: 22rpx; padding: 22rpx 25rpx; border-radius: 16rpx; color: #66776d; font-size: 24rpx; background: #eaf4eb;
+.tip.data-v-b7870fea { margin-bottom: 22rpx; padding: 22rpx 25rpx; border-radius: 16rpx; color: #475569; font-size: 24rpx; background: #eaf4eb;
 }
-.card.data-v-b7870fea { margin-bottom: 22rpx; padding: 0 26rpx; border-radius: 22rpx; background: #fff;
+.card.data-v-b7870fea { margin-bottom: 22rpx; padding: 0 26rpx; border: 1rpx solid #edf0ed; border-radius: 22rpx; background: #fff; box-shadow: 0 12rpx 32rpx rgba(17, 24, 39, 0.05);
 }
 .row.data-v-b7870fea { display: flex; align-items: center; justify-content: space-between; min-height: 112rpx; border-bottom: 1rpx solid #edf1ea;
 }
@@ -11,7 +11,7 @@
 }
 .row view.data-v-b7870fea { display: flex; flex: 1; flex-direction: column; padding: 20rpx 22rpx 20rpx 0;
 }
-.title.data-v-b7870fea { color: #1d3026; font-size: 29rpx;
+.title.data-v-b7870fea { color: #111827; font-size: 29rpx; font-weight: 600;
 }
 .desc.data-v-b7870fea { margin-top: 8rpx; color: #7b887f; font-size: 23rpx;
 }

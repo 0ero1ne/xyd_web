@@ -6,9 +6,9 @@ const _sfc_main = {
       expanded: -1,
       feedback: "",
       faqs: [
-        { q: "未登录可以浏览服务吗？", a: "可以，您可以先浏览公开服务，需要操作时再自行选择登录。" },
-        { q: "如何新增服务地址？", a: "登录后进入“我的 - 服务地址”，点击新增并保存地点信息。" },
-        { q: "如何关闭提醒？", a: "进入“消息通知”，分别调整需要接收的提醒开关。" }
+        { q: "小程序还有其他角色入口吗？", a: "没有。当前版本仅面向无人机飞手入住和登录。" },
+        { q: "如何维护服务区域？", a: "登录后进入“我的 - 服务区域”，新增常驻作业地点并保存。" },
+        { q: "如何关闭提醒？", a: "进入“消息通知”，分别调整需要接收的订单提醒开关。" }
       ]
     };
   },
@@ -39,8 +39,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       });
     }),
     b: $data.feedback,
-    c: common_vendor.o(($event) => $data.feedback = $event.detail.value, "78"),
-    d: common_vendor.o((...args) => $options.submit && $options.submit(...args), "86")
+    c: common_vendor.o(($event) => $data.feedback = $event.detail.value, "f6"),
+    d: common_vendor.o((...args) => $options.submit && $options.submit(...args), "74")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-6900f316"]]);
