@@ -25,7 +25,17 @@ function getIncomeSummary() {
     method: "GET"
   });
 }
+function cancelOrder(orderId, cancelReason) {
+  return utils_request.request({
+    url: `/api/order/cancel/${orderId}`,
+    method: "POST",
+    data: {
+      cancelReason
+    }
+  });
+}
 exports.acceptTask = acceptTask;
+exports.cancelOrder = cancelOrder;
 exports.completeOrder = completeOrder;
 exports.getIncomeSummary = getIncomeSummary;
 exports.getMyOrders = getMyOrders;

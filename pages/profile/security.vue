@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<view class="card">
-			<view class="row"><view><text class="title">微信账号</text><text class="desc">当前飞手账号通过微信登录</text></view><text class="tag">{{ isWechatBound ? '已绑定' : '未绑定' }}</text></view>
+			<view class="row" @click="handleWechatAccount"><view><text class="title">微信账号</text><text class="desc">当前飞手账号通过微信登录</text></view><text class="tag">{{ isWechatBound ? '已绑定' : '未绑定' }}</text></view>
 			<view class="row last" @click="editProfile"><view><text class="title">联系电话</text><text class="desc">{{ maskedPhone }}</text></view><text class="arrow">›</text></view>
 		</view>
 		<view class="card">
@@ -12,25 +12,52 @@
 	</view>
 </template>
 <script>
-	import request from '../../utils/request.js'
+	import { bindWechatAccount, getAccountInfo } from '../../api/user.js'
 
 	export default {
-		data() { return { phone: '', isWechatBound: false } },
+		data() { return { phone: '', isWechatBound: false, isBindingWechat: false } },
 		computed: { maskedPhone() { return this.phone ? (this.phone.includes('*') ? this.phone : `${this.phone.slice(0, 3)}****${this.phone.slice(-4)}`) : '未填写，点击设置' } },
-		onShow() { this.loadAccount() },
+		onShow() { this.loadAccountInfo() },
 		methods: {
 			getData(response) {
 				return response && response.data !== undefined ? response.data : response
 			},
-			loadAccount() {
-				request({
-					url: '/api/user/account',
-					method: 'GET'
-				}).then((response) => {
+			loadAccountInfo() {
+				getAccountInfo().then((response) => {
 					const data = this.getData(response) || {}
 					this.phone = data.maskedPhone || data.phone || ''
 					this.isWechatBound = data.wechatBound === true || data.isWechatBound === true || data.wechatBindStatus === '已绑定' || data.bindStatus === '已绑定'
 				}).catch(() => {})
+			},
+			handleWechatAccount() {
+				if (this.isWechatBound) {
+					uni.showToast({ title: '微信账号已绑定', icon: 'none' })
+					return
+				}
+				if (this.isBindingWechat) return
+				this.isBindingWechat = true
+				uni.login({
+					provider: 'weixin',
+					success: async (res) => {
+						try {
+							if (!res.code) {
+								uni.showToast({ title: '未获取到微信授权码', icon: 'none' })
+								return
+							}
+							await bindWechatAccount(res.code)
+							uni.showToast({ title: '绑定成功', icon: 'success' })
+							this.loadAccountInfo()
+						} catch (error) {
+							console.error('bindWechatAccount failed', error)
+						} finally {
+							this.isBindingWechat = false
+						}
+					},
+					fail: () => {
+						this.isBindingWechat = false
+						uni.showToast({ title: '微信登录失败', icon: 'none' })
+					}
+				})
 			},
 			editProfile() { uni.navigateTo({ url: '/pages/profile/edit-profile' }) },
 			privacy() { uni.showModal({ title: '信息使用说明', content: '头像、昵称、电话和服务区域用于飞手账号展示、订单沟通与作业服务。', showCancel: false }) },

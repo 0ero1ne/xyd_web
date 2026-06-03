@@ -88,19 +88,27 @@
 		display: flex;
 		align-items: center;
 }
-.complete-button.data-v-1acc51a1 {
+.complete-button.data-v-1acc51a1,
+	.cancel-button.data-v-1acc51a1 {
 		margin: 0 0 0 18rpx;
 		padding: 0 24rpx;
 		min-width: 100rpx;
 		height: 56rpx;
 		line-height: 56rpx;
 		border-radius: 14rpx;
-		color: #fff;
 		font-size: 24rpx;
 		font-weight: 600;
+}
+.complete-button.data-v-1acc51a1 {
+		color: #fff;
 		background: #166534;
 }
-.complete-button.data-v-1acc51a1::after {
+.cancel-button.data-v-1acc51a1 {
+		color: #6b7280;
+		background: #f1f2f3;
+}
+.complete-button.data-v-1acc51a1::after,
+	.cancel-button.data-v-1acc51a1::after {
 		border: none;
 }
 .state-card.data-v-1acc51a1,

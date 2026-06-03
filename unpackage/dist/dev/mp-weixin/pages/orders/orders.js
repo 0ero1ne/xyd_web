@@ -20,6 +20,7 @@ const _sfc_main = {
       orders: [],
       loading: false,
       completingOrderId: null,
+      cancelingOrderId: null,
       page: 1,
       size: 10,
       hasMore: true
@@ -110,9 +111,21 @@ const _sfc_main = {
       const minute = String(date.getMinutes()).padStart(2, "0");
       return `${month}-${day} ${hour}:${minute}`;
     },
+    formatStatusLabel(order) {
+      if (order && order.statusLabel) {
+        return order.statusLabel;
+      }
+      const statusMap = {
+        0: "已取消",
+        1: "进行中",
+        2: "进行中",
+        3: "已完成"
+      };
+      return statusMap[order && order.orderStatus] || "未知";
+    },
     statusClass(order) {
       const label = order.statusLabel || "";
-      if (label.indexOf("取消") !== -1 || order.orderStatus === 4) {
+      if (label.indexOf("取消") !== -1 || order.orderStatus === 0) {
         return "cancelled";
       }
       if (label.indexOf("完成") !== -1 || order.orderStatus === 3) {
@@ -121,6 +134,9 @@ const _sfc_main = {
       return "running";
     },
     canComplete(order) {
+      return order && (order.orderStatus === 1 || order.orderStatus === 2);
+    },
+    canCancel(order) {
       return order && (order.orderStatus === 1 || order.orderStatus === 2);
     },
     handleCompleteOrder(order) {
@@ -154,6 +170,39 @@ const _sfc_main = {
       }).finally(() => {
         this.completingOrderId = null;
       });
+    },
+    handleCancelOrder(order) {
+      if (!order || !order.orderId || this.cancelingOrderId) {
+        return;
+      }
+      common_vendor.index.showModal({
+        title: "确认取消",
+        content: "取消后该订单将不计入收入，是否继续？",
+        success: (result) => {
+          if (result.confirm) {
+            this.submitCancelOrder(order.orderId);
+          }
+        }
+      });
+    },
+    submitCancelOrder(orderId) {
+      const cancelReason = "用户主动取消";
+      this.cancelingOrderId = orderId;
+      api_order.cancelOrder(orderId, cancelReason).then((response) => {
+        unwrapData(response);
+        common_vendor.index.showToast({
+          title: "已取消",
+          icon: "success"
+        });
+        this.loadOrders(true);
+      }).catch(() => {
+        common_vendor.index.showToast({
+          title: "订单操作失败",
+          icon: "none"
+        });
+      }).finally(() => {
+        this.cancelingOrderId = null;
+      });
     }
   }
 };
@@ -172,7 +221,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     d: common_vendor.f($data.orders, (order, k0, i0) => {
       return common_vendor.e({
         a: common_vendor.t($options.formatOrderNo(order.orderNo)),
-        b: common_vendor.t(order.statusLabel || "未知"),
+        b: common_vendor.t($options.formatStatusLabel(order)),
         c: common_vendor.n($options.statusClass(order)),
         d: common_vendor.t(order.taskTitle || "未命名任务"),
         e: common_vendor.t(order.locationName || "未知地点"),
@@ -184,7 +233,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         j: $data.completingOrderId === order.orderId,
         k: common_vendor.o(($event) => $options.handleCompleteOrder(order), order.orderId || order.orderNo)
       } : {}, {
-        l: order.orderId || order.orderNo
+        l: $options.canCancel(order)
+      }, $options.canCancel(order) ? {
+        m: $data.cancelingOrderId === order.orderId,
+        n: common_vendor.o(($event) => $options.handleCancelOrder(order), order.orderId || order.orderNo)
+      } : {}, {
+        o: order.orderId || order.orderNo
       });
     }),
     e: $data.loading
