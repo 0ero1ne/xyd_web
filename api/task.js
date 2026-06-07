@@ -13,3 +13,10 @@ export function getTaskSummary() {
 		method: 'GET'
 	})
 }
+
+export function getTaskDetail(id) {
+	return request({
+		url: `/api/task/detail/${id}`,
+		method: 'GET'
+	})
+}

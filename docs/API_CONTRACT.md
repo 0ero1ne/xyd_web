@@ -8,6 +8,8 @@ Base URL:
 http://localhost:8080
 ```
 
+前端请求 Base URL 由 `config/env.js` 统一配置：开发阶段使用 `ENV = 'dev'`，上线发行前改为 `ENV = 'prod'`。
+
 统一响应：
 
 ```json
@@ -282,6 +284,34 @@ GET /api/task/summary
 
 ```http
 GET /api/task/detail/{id}
+```
+
+返回 `data`：
+```json
+{
+  "id": 1,
+  "taskNo": "TASK20260601001",
+  "taskTitle": "水稻除虫喷洒",
+  "status": 1,
+  "statusLabel": "待接单",
+  "expectedIncome": 960,
+  "locationName": "青禾村东侧 3 号田",
+  "detailAddress": "青禾村东侧 3 号田",
+  "distanceKm": 2.3,
+  "areaMu": 32,
+  "cropType": "水稻",
+  "serviceType": "除虫喷洒",
+  "plannedStartTime": "2026-06-01T17:00:00",
+  "plannedEndTime": "2026-06-01T19:00:00",
+  "deadlineTime": "2026-06-01T16:30:00",
+  "requiredBatteryCount": 4,
+  "pesticideName": "阿维菌素",
+  "pesticideDosage": "500ml/亩",
+  "tags": ["今日可飞", "除虫", "需电池4组"],
+  "description": "按田块边界均匀喷洒，避开鱼塘区域。",
+  "contactName": "张三",
+  "contactPhone": "13800000000"
+}
 ```
 
 ---

@@ -168,6 +168,9 @@
 				this.nickname = event.detail.value
 			},
 			login() {
+				if (this.isLoggingIn) {
+					return
+				}
 				if (!this.agreementChecked) {
 					this.promptAgreement()
 					return
@@ -193,12 +196,17 @@
 				}
 
 				this.isLoggingIn = true
+				uni.showLoading({
+					title: '登录中',
+					mask: true
+				})
 				// #ifdef MP-WEIXIN
 				uni.login({
 					provider: 'weixin',
 					success: (loginResult) => {
 						if (!loginResult.code) {
 							this.isLoggingIn = false
+							uni.hideLoading()
 							uni.showToast({
 								title: '未获取到微信登录凭证，请重试',
 								icon: 'none'
@@ -209,6 +217,7 @@
 					},
 					fail: () => {
 						this.isLoggingIn = false
+						uni.hideLoading()
 						uni.showToast({
 							title: '微信登录失败，请重试',
 							icon: 'none'
@@ -218,6 +227,7 @@
 				// #endif
 				// #ifndef MP-WEIXIN
 				this.isLoggingIn = false
+				uni.hideLoading()
 				uni.showToast({
 					title: '请在微信小程序中登录',
 					icon: 'none'
@@ -246,6 +256,7 @@
 					})
 				}).finally(() => {
 					this.isLoggingIn = false
+					uni.hideLoading()
 				})
 			},
 			completeLogin(loginData) {

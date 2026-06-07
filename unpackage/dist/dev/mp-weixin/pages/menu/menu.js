@@ -1,7 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_task = require("../../api/task.js");
-const api_order = require("../../api/order.js");
 const isPresent = (value) => value !== void 0 && value !== null && value !== "";
 const unwrapData = (response) => {
   if (response && response.code !== void 0 && response.code !== 200) {
@@ -15,7 +14,6 @@ const _sfc_main = {
       isLoggedIn: false,
       summaryLoading: false,
       tasksLoading: false,
-      acceptingTaskId: null,
       stats: [
         { value: "--km", label: "最近任务" },
         { value: "--亩", label: "单次面积" },
@@ -110,46 +108,23 @@ const _sfc_main = {
         }
       });
     },
-    handleAcceptTask(item) {
+    handleViewTask(item) {
       if (!this.isLoggedIn) {
         this.handleAction();
         return;
       }
-      if (!item.id || this.acceptingTaskId) {
+      if (!item.id) {
         return;
       }
-      common_vendor.index.showModal({
-        title: "确认接单",
-        content: "是否确认接受该任务？",
-        success: (result) => {
-          if (result.confirm) {
-            this.submitAcceptTask(item.id);
-          }
-        }
+      common_vendor.wx$1.showLoading({
+        title: "加载中",
+        mask: true
       });
-    },
-    submitAcceptTask(taskId) {
-      this.acceptingTaskId = taskId;
-      api_order.acceptTask(taskId).then((response) => {
-        unwrapData(response);
-        common_vendor.index.showToast({
-          title: "接单成功",
-          icon: "success"
-        });
-        this.loadRecommendTasks();
-        setTimeout(() => {
-          common_vendor.index.switchTab({
-            url: "/pages/orders/orders"
-          });
-        }, 500);
-      }).catch((error) => {
-        const message = error && error.message ? error.message : "";
-        common_vendor.index.showToast({
-          title: message.indexOf("不可接") !== -1 || message.indexOf("已被接") !== -1 ? "任务已被接单" : "任务已被接单",
-          icon: "none"
-        });
-      }).finally(() => {
-        this.acceptingTaskId = null;
+      common_vendor.index.navigateTo({
+        url: `/pages/task/detail?id=${item.id}`,
+        fail: () => {
+          common_vendor.wx$1.hideLoading();
+        }
       });
     }
   }
@@ -183,9 +158,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         })
       } : {}, {
         e: common_vendor.t(item.price),
-        f: common_vendor.o(($event) => $options.handleAcceptTask(item), item.id || item.taskNo),
+        f: common_vendor.o(($event) => $options.handleViewTask(item), item.id || item.taskNo),
         g: item.id || item.taskNo,
-        h: common_vendor.o(($event) => $options.handleAcceptTask(item), item.id || item.taskNo)
+        h: common_vendor.o(($event) => $options.handleViewTask(item), item.id || item.taskNo)
       });
     })
   }, {

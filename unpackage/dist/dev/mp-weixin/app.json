@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/menu/menu",
+    "pages/task/detail",
     "pages/index/index",
     "pages/orders/orders",
     "pages/profile/profile",

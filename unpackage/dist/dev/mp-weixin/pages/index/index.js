@@ -86,6 +86,9 @@ const _sfc_main = {
       this.nickname = event.detail.value;
     },
     login() {
+      if (this.isLoggingIn) {
+        return;
+      }
       if (!this.agreementChecked) {
         this.promptAgreement();
         return;
@@ -110,11 +113,16 @@ const _sfc_main = {
         return;
       }
       this.isLoggingIn = true;
+      common_vendor.index.showLoading({
+        title: "登录中",
+        mask: true
+      });
       common_vendor.index.login({
         provider: "weixin",
         success: (loginResult) => {
           if (!loginResult.code) {
             this.isLoggingIn = false;
+            common_vendor.index.hideLoading();
             common_vendor.index.showToast({
               title: "未获取到微信登录凭证，请重试",
               icon: "none"
@@ -125,6 +133,7 @@ const _sfc_main = {
         },
         fail: () => {
           this.isLoggingIn = false;
+          common_vendor.index.hideLoading();
           common_vendor.index.showToast({
             title: "微信登录失败，请重试",
             icon: "none"
@@ -154,6 +163,7 @@ const _sfc_main = {
         });
       }).finally(() => {
         this.isLoggingIn = false;
+        common_vendor.index.hideLoading();
       });
     },
     completeLogin(loginData) {

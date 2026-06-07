@@ -1,4 +1,6 @@
-const baseUrl = 'http://localhost:8080'
+import env from '@/config/env.js'
+
+const baseUrl = env.baseUrl
 let isRedirectingToLogin = false
 
 function redirectToLogin() {

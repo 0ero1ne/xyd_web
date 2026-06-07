@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-const baseUrl = "http://localhost:8080";
+const config_env = require("../config/env.js");
+const baseUrl = config_env.env.baseUrl;
 let isRedirectingToLogin = false;
 function redirectToLogin() {
   if (isRedirectingToLogin) {

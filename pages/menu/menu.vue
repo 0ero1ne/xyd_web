@@ -31,7 +31,7 @@
 				v-for="item in items"
 				:key="item.id || item.taskNo"
 				class="task-card"
-				@click="handleAcceptTask(item)"
+				@click="handleViewTask(item)"
 			>
 				<view class="task-main">
 					<text class="task-title">{{ item.title }}</text>
@@ -42,7 +42,7 @@
 				</view>
 				<view class="task-side">
 					<text class="price">{{ item.price }}</text>
-					<button class="accept-button" @click.stop="handleAcceptTask(item)">接单</button>
+					<button class="accept-button" @click.stop="handleViewTask(item)">接单</button>
 				</view>
 			</view>
 		</view>
@@ -51,7 +51,6 @@
 
 <script>
 	import { getRecommendTasks, getTaskSummary } from '../../api/task.js'
-	import { acceptTask } from '../../api/order.js'
 
 	const isPresent = value => value !== undefined && value !== null && value !== ''
 	const unwrapData = (response) => {
@@ -67,7 +66,6 @@
 				isLoggedIn: false,
 				summaryLoading: false,
 				tasksLoading: false,
-				acceptingTaskId: null,
 				stats: [
 					{ value: '--km', label: '最近任务' },
 					{ value: '--亩', label: '单次面积' },
@@ -163,47 +161,24 @@
 					}
 				})
 			},
-			handleAcceptTask(item) {
+			handleViewTask(item) {
 				if (!this.isLoggedIn) {
 					this.handleAction()
 					return
 				}
-				if (!item.id || this.acceptingTaskId) {
+				if (!item.id) {
 					return
 				}
 
-				uni.showModal({
-					title: '确认接单',
-					content: '是否确认接受该任务？',
-					success: (result) => {
-						if (result.confirm) {
-							this.submitAcceptTask(item.id)
-						}
-					}
+				wx.showLoading({
+					title: '加载中',
+					mask: true
 				})
-			},
-			submitAcceptTask(taskId) {
-				this.acceptingTaskId = taskId
-				acceptTask(taskId).then((response) => {
-					unwrapData(response)
-					uni.showToast({
-						title: '接单成功',
-						icon: 'success'
-					})
-					this.loadRecommendTasks()
-					setTimeout(() => {
-						uni.switchTab({
-							url: '/pages/orders/orders'
-						})
-					}, 500)
-				}).catch((error) => {
-					const message = error && error.message ? error.message : ''
-					uni.showToast({
-						title: message.indexOf('不可接') !== -1 || message.indexOf('已被接') !== -1 ? '任务已被接单' : '任务已被接单',
-						icon: 'none'
-					})
-				}).finally(() => {
-					this.acceptingTaskId = null
+				uni.navigateTo({
+					url: `/pages/task/detail?id=${item.id}`,
+					fail: () => {
+						wx.hideLoading()
+					}
 				})
 			}
 		}

@@ -12,6 +12,13 @@ function getTaskSummary() {
     method: "GET"
   });
 }
+function getTaskDetail(id) {
+  return utils_request.request({
+    url: `/api/task/detail/${id}`,
+    method: "GET"
+  });
+}
 exports.getRecommendTasks = getRecommendTasks;
+exports.getTaskDetail = getTaskDetail;
 exports.getTaskSummary = getTaskSummary;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/task.js.map
