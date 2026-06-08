@@ -1,14 +1,50 @@
 <template>
   <main class="auth-page">
     <section class="auth-copy">
-      <p class="eyebrow">PLANE WEB</p>
-      <h1>把附近的植保任务接到手边。</h1>
-      <p>Web 版飞手工作台用于查看推荐任务、接单、管理订单和核对收入。</p>
+      <RouterLink class="auth-brand" to="/login">
+        <span class="auth-logo">
+          <img :src="logoUrl" alt="云航植保" />
+        </span>
+        <span>
+          <strong>云航植保</strong>
+          <small>飞手 Web 工作台</small>
+        </span>
+      </RouterLink>
+
+      <div class="auth-copy-main">
+        <p class="eyebrow">PILOT DISPATCH</p>
+        <h1>连接附近植保任务，管理你的飞手作业。</h1>
+        <p>云航植保 Web 工作台支持任务查看、接单、订单管理与作业收入统计。</p>
+      </div>
+
+      <div class="auth-proof">
+        <span>农业无人机</span>
+        <span>任务调度</span>
+        <span>收入统计</span>
+      </div>
+
+      <div class="auth-metrics" aria-label="平台能力">
+        <div>
+          <span>附近任务</span>
+          <strong>实时推荐</strong>
+        </div>
+        <div>
+          <span>快速接单</span>
+          <strong>一键确认</strong>
+        </div>
+        <div>
+          <span>作业收入</span>
+          <strong>清晰统计</strong>
+        </div>
+      </div>
     </section>
 
     <section class="auth-card">
-      <div class="form-heading">
-        <span>登录</span>
+      <div class="form-heading auth-form-heading">
+        <div>
+          <span>欢迎回来</span>
+          <p>登录云航植保飞手工作台</p>
+        </div>
         <RouterLink to="/register">创建账号</RouterLink>
       </div>
 
@@ -40,6 +76,7 @@ import { useRouter } from 'vue-router'
 import { PhSignIn } from '@phosphor-icons/vue'
 import { login } from '../api/auth'
 import { useAuthStore } from '../stores/auth'
+import logoUrl from '../assets/logo.svg'
 
 const router = useRouter()
 const authStore = useAuthStore()

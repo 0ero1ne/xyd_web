@@ -1,15 +1,51 @@
 <template>
   <main class="auth-page">
     <section class="auth-copy">
-      <p class="eyebrow">PILOT ACCESS</p>
-      <h1>注册飞手账号，进入任务大厅。</h1>
-      <p>账号创建成功后会保存登录态，并直接进入 Web 端任务工作台。</p>
+      <RouterLink class="auth-brand" to="/login">
+        <span class="auth-logo">
+          <img :src="logoUrl" alt="云航植保" />
+        </span>
+        <span>
+          <strong>云航植保</strong>
+          <small>飞手 Web 工作台</small>
+        </span>
+      </RouterLink>
+
+      <div class="auth-copy-main">
+        <p class="eyebrow">PILOT ACCESS</p>
+        <h1>创建飞手账号，进入植保任务调度网络。</h1>
+        <p>注册后可进入 Web 工作台，查看附近任务、管理订单，并追踪你的作业收入。</p>
+      </div>
+
+      <div class="auth-proof">
+        <span>农业无人机</span>
+        <span>任务调度</span>
+        <span>收入统计</span>
+      </div>
+
+      <div class="auth-metrics" aria-label="平台能力">
+        <div>
+          <span>身份角色</span>
+          <strong>飞手 pilot</strong>
+        </div>
+        <div>
+          <span>登录状态</span>
+          <strong>Web 存储</strong>
+        </div>
+        <div>
+          <span>订单收益</span>
+          <strong>持续追踪</strong>
+        </div>
+      </div>
     </section>
 
     <section class="auth-card">
-      <div class="form-heading">
-        <span>注册</span>
-        <RouterLink to="/login">已有账号</RouterLink>
+      <div class="form-heading auth-form-heading">
+        <div>
+          <span>创建账号</span>
+          <p>注册云航植保飞手工作台</p>
+        </div>
+        <RouterLink to="/login">返回登录</RouterLink>
       </div>
 
       <form @submit.prevent="handleSubmit">
@@ -32,9 +68,11 @@
 
         <button class="primary-button" type="submit" :disabled="submitting">
           <PhUserPlus :size="19" />
-          {{ submitting ? '注册中...' : '注册并进入' }}
+          {{ submitting ? '注册中...' : '创建飞手账号' }}
         </button>
       </form>
+
+      <p class="auth-switch">已有账号？<RouterLink to="/login">返回登录</RouterLink></p>
     </section>
   </main>
 </template>
@@ -45,6 +83,7 @@ import { useRouter } from 'vue-router'
 import { PhUserPlus } from '@phosphor-icons/vue'
 import { register } from '../api/auth'
 import { useAuthStore } from '../stores/auth'
+import logoUrl from '../assets/logo.svg'
 
 const router = useRouter()
 const authStore = useAuthStore()

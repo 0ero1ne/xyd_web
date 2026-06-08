@@ -2,55 +2,96 @@
   <AppShell>
     <button class="back-button" type="button" @click="router.back()">
       <PhArrowLeft :size="18" />
-      返回
+      返回任务大厅
     </button>
 
-    <section v-if="loading" class="detail-card skeleton-detail">
-      <span />
-      <strong />
-      <p />
-      <p />
-      <p />
+    <section v-if="loading" class="detail-layout">
+      <article class="detail-card skeleton-detail">
+        <span />
+        <strong />
+        <p />
+        <p />
+        <p />
+      </article>
+      <aside class="detail-side skeleton-detail">
+        <span />
+        <strong />
+        <p />
+      </aside>
     </section>
 
     <p v-else-if="error" class="notice error">{{ error }}</p>
 
-    <section v-else-if="task" class="detail-card">
-      <div class="detail-hero">
-        <div>
-          <p class="eyebrow">TASK DETAIL</p>
-          <h1>{{ task.taskTitle || '任务详情' }}</h1>
-          <p>{{ task.locationName || '地点待确认' }}</p>
+    <section v-else-if="task" class="detail-layout">
+      <article class="detail-card">
+        <div class="detail-hero">
+          <div>
+            <p class="eyebrow">TASK DETAIL</p>
+            <h1>{{ task.taskTitle || '任务详情' }}</h1>
+            <p>{{ task.locationName || '地点待确认' }}</p>
+          </div>
+          <div class="tag-row">
+            <span v-for="tag in task.tags || []" :key="tag">{{ tag }}</span>
+            <span v-if="!(task.tags || []).length">无标签</span>
+          </div>
         </div>
+
+        <section class="detail-section">
+          <div class="section-heading">
+            <span>01</span>
+            <h2>基础信息</h2>
+          </div>
+          <div class="detail-grid">
+            <InfoItem label="详细地址" :value="task.detailAddress" />
+            <InfoItem label="作业面积" :value="`${task.areaMu || 0} 亩`" />
+            <InfoItem label="距离" :value="`${task.distanceKm || 0} km`" />
+            <InfoItem label="作物类型" :value="task.cropType" />
+            <InfoItem label="服务类型" :value="task.serviceType" />
+            <InfoItem label="截止时间" :value="formatTime(task.deadlineTime)" />
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-heading">
+            <span>02</span>
+            <h2>作业要求</h2>
+          </div>
+          <div class="detail-grid">
+            <InfoItem label="电池要求" :value="`${task.requiredBatteryCount || 0} 组`" />
+            <InfoItem label="药剂名称" :value="task.pesticideName" />
+            <InfoItem label="药剂用量" :value="task.pesticideDosage" />
+            <InfoItem label="联系人" :value="task.contactName" />
+            <InfoItem label="联系电话" :value="task.contactPhone" />
+          </div>
+        </section>
+
+        <section class="description-block">
+          <div class="section-heading">
+            <span>03</span>
+            <h2>任务说明</h2>
+          </div>
+          <p>{{ task.description || '暂无任务说明' }}</p>
+        </section>
+      </article>
+
+      <aside class="detail-side">
         <div class="income-block">
-          <span>{{ task.statusLabel || '待接单' }}</span>
+          <span>预估收入</span>
           <strong>{{ money(task.expectedIncome) }}</strong>
+          <small>最终收入以后端订单结算为准</small>
         </div>
-      </div>
 
-      <div class="detail-grid">
-        <InfoItem label="详细地址" :value="task.detailAddress" />
-        <InfoItem label="作业面积" :value="`${task.areaMu || 0} 亩`" />
-        <InfoItem label="距离" :value="`${task.distanceKm || 0} km`" />
-        <InfoItem label="作物类型" :value="task.cropType" />
-        <InfoItem label="服务类型" :value="task.serviceType" />
-        <InfoItem label="截止时间" :value="task.deadlineTime" />
-        <InfoItem label="电池要求" :value="`${task.requiredBatteryCount || 0} 组`" />
-        <InfoItem label="药剂名称" :value="task.pesticideName" />
-        <InfoItem label="药剂用量" :value="task.pesticideDosage" />
-        <InfoItem label="联系人" :value="task.contactName" />
-        <InfoItem label="联系电话" :value="task.contactPhone" />
-      </div>
+        <div class="status-card">
+          <span>任务状态</span>
+          <strong>{{ task.statusLabel || '待接单' }}</strong>
+          <p>{{ acceptReason }}</p>
+        </div>
 
-      <div class="description-block">
-        <h2>任务说明</h2>
-        <p>{{ task.description || '暂无任务说明' }}</p>
-      </div>
-
-      <button v-if="task.status === 1" class="primary-button detail-action" type="button" :disabled="submitting" @click="handleAccept">
-        <PhCheckCircle :size="19" />
-        {{ submitting ? '接单中...' : '确认接单' }}
-      </button>
+        <button class="primary-button detail-action" type="button" :disabled="submitting || task.status !== 1" @click="handleAccept">
+          <PhCheckCircle :size="19" />
+          {{ submitting ? '接单中...' : task.status === 1 ? '确认接单' : '当前不可接单' }}
+        </button>
+      </aside>
     </section>
 
     <FeedbackToast :message="toast.message" :type="toast.type" />
@@ -58,7 +99,7 @@
 </template>
 
 <script setup>
-import { defineComponent, h, onMounted, reactive, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { PhArrowLeft, PhCheckCircle } from '@phosphor-icons/vue'
 import AppShell from '../components/AppShell.vue'
@@ -90,8 +131,19 @@ const toast = reactive({
   type: 'info'
 })
 
+const acceptReason = computed(() => {
+  if (!task.value) return ''
+  if (task.value.status === 1) return '资料完整，当前飞手可确认接单。'
+  return task.value.statusLabel ? `当前状态为“${task.value.statusLabel}”，不可重复接单。` : '任务当前状态不可接单。'
+})
+
 function money(value) {
   return `¥${Number(value || 0).toLocaleString()}`
+}
+
+function formatTime(value) {
+  if (!value) return '待确认'
+  return String(value).replace('T', ' ').slice(0, 16)
 }
 
 function showToast(message, type = 'info') {
@@ -116,7 +168,7 @@ async function fetchDetail() {
 }
 
 async function handleAccept() {
-  if (submitting.value || !task.value) return
+  if (submitting.value || !task.value || task.value.status !== 1) return
 
   submitting.value = true
 

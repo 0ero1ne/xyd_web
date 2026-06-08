@@ -1,41 +1,80 @@
 <template>
   <AppShell>
-    <header class="page-header">
+    <header class="page-header workbench-hero">
       <div>
-        <p class="eyebrow">PROFILE</p>
-        <h1>我的页面</h1>
-        <p>查看飞手账号和累计作业收入。</p>
+        <p class="eyebrow">PILOT CENTER</p>
+        <h1>个人工作台</h1>
+        <p>查看飞手资料、作业收入和账户状态，保持接单身份与平台登录状态清晰可控。</p>
       </div>
     </header>
 
-    <section class="profile-grid">
-      <article class="profile-card">
+    <section class="profile-workbench">
+      <article class="profile-card profile-identity">
         <div class="avatar">{{ displayName.slice(0, 1) }}</div>
         <div>
+          <p class="eyebrow">认证飞手</p>
           <h2>{{ displayName }}</h2>
           <p>{{ userInfo?.phone || '手机号未填写' }}</p>
-          <span>无人机飞手</span>
+          <span>{{ userInfo?.role || 'pilot' }}</span>
         </div>
       </article>
 
-      <article class="stat-card">
+      <article class="stat-card highlight">
         <span>累计收入</span>
         <strong>{{ money(summary.totalIncome) }}</strong>
+        <small>已完成订单统计</small>
       </article>
 
       <article class="stat-card">
-        <span>已完成订单数</span>
+        <span>已完成订单</span>
         <strong>{{ summary.completedOrderCount || 0 }}</strong>
+        <small>平台结算口径</small>
+      </article>
+
+      <article class="stat-card">
+        <span>进行中订单</span>
+        <strong>{{ runningOrderCount }}</strong>
+        <small>当前飞手订单</small>
       </article>
     </section>
 
-    <p v-if="loading" class="notice">正在加载收入统计...</p>
-    <p v-else-if="error" class="notice error">{{ error }}</p>
+    <section class="profile-lower">
+      <article class="account-panel">
+        <div class="section-heading">
+          <span>账户</span>
+          <h2>账户信息</h2>
+        </div>
+        <div class="detail-grid compact">
+          <div class="info-item">
+            <span>用户名</span>
+            <strong>{{ userInfo?.username || displayName }}</strong>
+          </div>
+          <div class="info-item">
+            <span>手机号</span>
+            <strong>{{ userInfo?.phone || '待完善' }}</strong>
+          </div>
+          <div class="info-item">
+            <span>角色</span>
+            <strong>{{ userInfo?.role || 'pilot' }}</strong>
+          </div>
+        </div>
+      </article>
 
-    <button class="danger-button logout-button" type="button" @click="handleLogout">
-      <PhSignOut :size="19" />
-      退出登录
-    </button>
+      <article class="logout-panel">
+        <div>
+          <span>登录状态</span>
+          <strong>当前账号已登录</strong>
+          <p>退出后会清除本地 token 和 userInfo，并返回登录页。</p>
+        </div>
+        <button class="danger-button logout-button" type="button" @click="handleLogout">
+          <PhSignOut :size="19" />
+          退出登录
+        </button>
+      </article>
+    </section>
+
+    <p v-if="loading" class="notice">正在加载收入与订单统计...</p>
+    <p v-else-if="error" class="notice error">{{ error }}</p>
   </AppShell>
 </template>
 
@@ -44,13 +83,14 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { PhSignOut } from '@phosphor-icons/vue'
 import AppShell from '../components/AppShell.vue'
-import { getIncomeSummary } from '../api/order'
+import { getIncomeSummary, getMyOrders } from '../api/order'
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const loading = ref(true)
 const error = ref('')
+const runningOrderCount = ref(0)
 const summary = reactive({
   totalIncome: 0,
   completedOrderCount: 0
@@ -68,11 +108,15 @@ async function fetchSummary() {
   error.value = ''
 
   try {
-    const data = await getIncomeSummary()
-    summary.totalIncome = data?.totalIncome || 0
-    summary.completedOrderCount = data?.completedOrderCount || 0
+    const [incomeData, runningData] = await Promise.all([
+      getIncomeSummary(),
+      getMyOrders({ status: 'running', page: 1, size: 10 })
+    ])
+    summary.totalIncome = incomeData?.totalIncome || 0
+    summary.completedOrderCount = incomeData?.completedOrderCount || 0
+    runningOrderCount.value = runningData?.total ?? runningData?.records?.length ?? 0
   } catch (err) {
-    error.value = err.message || '收入统计加载失败'
+    error.value = err.message || '统计加载失败'
   } finally {
     loading.value = false
   }
