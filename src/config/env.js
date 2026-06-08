@@ -1,11 +1,11 @@
-const ENV = 'dev'
+const ENV = 'prod'
 
 const config = {
   dev: {
     baseUrl: 'http://localhost:8080'
   },
   prod: {
-    baseUrl: 'https://你的正式后端域名'
+    baseUrl: 'https://xyd-backend.up.railway.app'
   }
 }
 

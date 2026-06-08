@@ -5,7 +5,7 @@
 Base URL:
 
 ```text
-http://localhost:8080
+https://xyd-backend.up.railway.app
 ```
 
 前端请求 Base URL 由 `src/config/env.js` 统一配置：开发阶段使用 `ENV = 'dev'`，上线发布前改为 `ENV = 'prod'`。
