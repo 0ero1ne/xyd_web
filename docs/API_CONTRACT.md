@@ -1,4 +1,4 @@
-# XYD 前后端接口约定
+# 云航植保飞手 Web 前后端接口约定
 
 ## 1. 通用规则
 
@@ -8,7 +8,7 @@ Base URL:
 http://localhost:8080
 ```
 
-前端请求 Base URL 由 `config/env.js` 统一配置：开发阶段使用 `ENV = 'dev'`，上线发行前改为 `ENV = 'prod'`。
+前端请求 Base URL 由 `src/config/env.js` 统一配置：开发阶段使用 `ENV = 'dev'`，上线发布前改为 `ENV = 'prod'`。
 
 统一响应：
 
@@ -27,30 +27,29 @@ Authorization: Bearer <token>
 ```
 
 说明：
-
-- 登录接口不需要 token。
-- 其他小程序接口需要 token。
+- 登录和注册接口不需要 token。
+- 其他业务接口需要 token。
+- token 存储在 Web 标准 `localStorage`。
 - userId 由后端从 token 解析，前端不要传 userId。
-- 前端兼容 `{ code, message, data }` 和直接返回业务数据两种形式，但后端推荐统一 `{ code, message, data }`。
+- 后端返回 HTTP 401 时，前端清除 token 和 userInfo，并跳转 `/login`。
 
 ---
 
-## 2. 登录接口
+## 2. Web 登录注册接口
 
-### 飞手微信登录
+### 注册
 
 ```http
-POST /api/auth/wx-login
+POST /api/web/auth/register
 ```
 
 请求：
 
 ```json
 {
-  "code": "uni.login 返回的临时 code",
-  "nickname": "微信昵称",
-  "avatarUrl": "微信头像地址",
-  "userIdentity": "pilot"
+  "username": "张三",
+  "phone": "13800000000",
+  "password": "123456"
 }
 ```
 
@@ -61,189 +60,58 @@ POST /api/auth/wx-login
   "token": "jwt-token",
   "userInfo": {
     "id": 1,
-    "openid": "微信 openid",
-    "nickname": "飞手昵称",
-    "avatarUrl": "头像地址",
+    "username": "张三",
     "phone": "13800000000",
-    "role": "USER",
-    "status": 1,
-    "userIdentity": "pilot"
+    "role": "pilot"
   }
 }
 ```
 
-前端登录成功后保存：
+### 登录
+
+```http
+POST /api/web/auth/login
+```
+
+请求：
+
+```json
+{
+  "account": "张三或13800000000",
+  "password": "123456"
+}
+```
+
+返回 `data`：
+
+```json
+{
+  "token": "jwt-token",
+  "userInfo": {
+    "id": 1,
+    "username": "张三",
+    "phone": "13800000000",
+    "role": "pilot"
+  }
+}
+```
+
+前端登录或注册成功后保存：
 
 ```text
 token
 userInfo
-planeUserRole = pilot
-planeUserRoleName = 无人机飞手
-```
-
-### 退出登录
-
-```http
-POST /api/auth/logout
 ```
 
 ---
 
-## 3. 用户资料接口
-
-### 获取飞手资料
-
-```http
-GET /api/user/profile
-```
-
-返回 `data`：
-
-```json
-{
-  "avatarUrl": "头像地址",
-  "nickname": "飞手昵称",
-  "realName": "真实姓名",
-  "phone": "手机号",
-  "userIdentity": "pilot"
-}
-```
-
-### 更新飞手资料
-
-```http
-PUT /api/user/profile
-```
-
-请求：
-
-```json
-{
-  "nickname": "飞手昵称",
-  "avatarUrl": "头像地址",
-  "realName": "真实姓名",
-  "phone": "手机号",
-  "userIdentity": "pilot"
-}
-```
-
----
-
-## 4. 账号安全接口
-
-### 获取账号安全信息
-
-```http
-GET /api/user/account
-```
-
-返回 `data`：
-
-```json
-{
-  "phone": "13800000000",
-  "maskedPhone": "138****0000",
-  "wechatBound": true
-}
-```
-
-前端兼容字段：
-
-```text
-isWechatBound
-wechatBindStatus
-bindStatus
-```
-
-### 绑定微信账号
-
-```http
-POST /api/user/account/bind-wechat
-```
-
-请求：
-
-```json
-{
-  "code": "uni.login 返回的微信 code"
-}
-```
-
-说明：
-
-- 用于账号与安全页面绑定微信账号。
-- 是把当前登录用户绑定到微信 openid。
-- 不等同于重新登录。
-- 当前用户由后端从 token 中解析。
-
----
-
-## 5. 服务区域接口
-
-### 查询服务区域
-
-```http
-GET /api/address/list
-```
-
-返回 `data`：
-
-```json
-[
-  {
-    "id": 1,
-    "addressName": "东侧水稻田",
-    "province": "浙江省",
-    "city": "杭州市",
-    "district": "萧山区",
-    "detailAddress": "青禾村 3 号田",
-    "contactName": "张三",
-    "contactPhone": "13800000000",
-    "longitude": 120.1,
-    "latitude": 30.2,
-    "isDefault": true
-  }
-]
-```
-
-### 新增服务区域
-
-```http
-POST /api/address/create
-```
-
-### 更新服务区域
-
-```http
-PUT /api/address/update/{id}
-```
-
-### 设置默认服务区域
-
-```http
-POST /api/address/default/{id}
-```
-
-### 删除服务区域
-
-```http
-DELETE /api/address/delete/{id}
-```
-
----
-
-## 6. 任务接口
+## 3. 任务接口
 
 ### 推荐任务
 
 ```http
 GET /api/task/recommend
 ```
-
-说明：
-
-- 只返回 `agri_task.status = 1` 的待接单任务。
-- 已接单、进行中、已完成、已取消任务不出现在推荐任务中。
 
 返回 `data`：
 
@@ -264,21 +132,9 @@ GET /api/task/recommend
 ]
 ```
 
-### 工作台统计
-
-```http
-GET /api/task/summary
-```
-
-返回 `data`：
-
-```json
-{
-  "nearestDistanceKm": 2.3,
-  "maxAreaMu": 45,
-  "maxExpectedIncome": 1260
-}
-```
+说明：
+- 只返回 `agri_task.status = 1` 的待接单任务。
+- 已接单、进行中、已完成、已取消任务不出现在推荐任务中。
 
 ### 任务详情
 
@@ -287,6 +143,7 @@ GET /api/task/detail/{id}
 ```
 
 返回 `data`：
+
 ```json
 {
   "id": 1,
@@ -301,8 +158,6 @@ GET /api/task/detail/{id}
   "areaMu": 32,
   "cropType": "水稻",
   "serviceType": "除虫喷洒",
-  "plannedStartTime": "2026-06-01T17:00:00",
-  "plannedEndTime": "2026-06-01T19:00:00",
   "deadlineTime": "2026-06-01T16:30:00",
   "requiredBatteryCount": 4,
   "pesticideName": "阿维菌素",
@@ -316,7 +171,7 @@ GET /api/task/detail/{id}
 
 ---
 
-## 7. 订单接口
+## 4. 订单接口
 
 ### 接单
 
@@ -325,7 +180,6 @@ POST /api/order/accept/{taskId}
 ```
 
 说明：
-
 - 后端从 token 解析当前用户。
 - 接单成功后任务从大厅消失。
 - 生成当前用户的订单。
@@ -379,7 +233,6 @@ POST /api/order/complete/{orderId}
 ```
 
 说明：
-
 - 只能完成当前登录用户自己的订单。
 - 完成后 `order_status = 3`。
 - 已完成订单计入累计收入。
@@ -399,7 +252,6 @@ POST /api/order/cancel/{orderId}
 ```
 
 说明：
-
 - 取消后 `order_status = 0`。
 - 取消订单不计入累计收入。
 
@@ -419,6 +271,5 @@ GET /api/order/income/summary
 ```
 
 说明：
-
 - 只统计当前用户 `order_status = 3` 的已完成订单。
 - 已取消订单不计入收入。
