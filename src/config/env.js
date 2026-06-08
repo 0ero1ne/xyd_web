@@ -5,7 +5,7 @@ const config = {
     baseUrl: 'http://localhost:8080'
   },
   prod: {
-    baseUrl: 'https://xyd-backend.up.railway.app'
+    baseUrl: 'https://xydbackend-production.up.railway.app'
   }
 }
 
